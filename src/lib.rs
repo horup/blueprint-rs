@@ -10,12 +10,17 @@ pub mod config;
 mod tests {
     use glam::Vec3;
 
-    use crate::world::World;
+    use crate::world::{GameWorld, World};
+
+    impl GameWorld for () {
+        type Sprite = ();
+        type Event = ();
+    }
 
     #[test]
     fn it_works() {
         
-        let mut world:World<(), ()> = World::default();
+        let mut world:World<()> = World::default();
         let sprite = world.new_sprite();
         *sprite.pos_mut() = Vec3::new(0.0, 1.0, 0.0);
         let id = *sprite.id();

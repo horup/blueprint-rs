@@ -1,16 +1,14 @@
-use ggez::{ContextBuilder, event::{self, EventHandler}};
+use ggez::{ContextBuilder, event::{self, EventHandler}, graphics, timer};
 
-use crate::{config::Config, system::System, world::World};
+use crate::{config::Config, context::Context, event::Event, system::System, world::GameWorld, world::World};
 
-
-
-pub struct Engine<W:Default,S:Default,E> {
-    world:World<W,S>,
-    systems:Vec<System<W,S,E>>,
+pub struct Engine<W:GameWorld> {
+    world:World<W>,
+    systems:Vec<System<W>>,
     pub config:Config
 }
 
-impl<W:Default, S:Default, E> Engine<W, S, E> {
+impl<W:GameWorld> Engine<W> {
     pub fn new() -> Self {
         Self {
             world:World::default(),
@@ -19,11 +17,11 @@ impl<W:Default, S:Default, E> Engine<W, S, E> {
         }
     }
     
-    pub fn systems_mut(&mut self) -> &mut Vec<System<W,S,E>> {
+    pub fn systems_mut(&mut self) -> &mut Vec<System<W>> {
         &mut self.systems
     }
     
-    pub fn systems(&self) -> &Vec<System<W,S,E>> {
+    pub fn systems(&self) -> &Vec<System<W>> {
         &self.systems
     }
 
@@ -39,9 +37,18 @@ impl<W:Default, S:Default, E> Engine<W, S, E> {
     }
 }
 
-impl<W:Default, S:Default, E>  EventHandler for Engine<W, S, E>  {
-    fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
+impl<W:GameWorld>  EventHandler for Engine<W>  {
+    fn update(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
+        let event = Event::Tick(timer::average_delta(ctx).as_secs_f32());
 
+        for system in self.systems().clone() {
+            let mut context = Context {
+                event:&event,
+                world:&mut self.world
+            };
+
+            system(&mut context);
+        }
         Result::Ok(())
     }
 

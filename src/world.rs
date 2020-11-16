@@ -1,15 +1,17 @@
-use std::iter::Filter;
-
 use crate::sprite::{Sprite, SpriteID};
 
+pub trait GameWorld : Default {
+    type Sprite : Default;
+    type Event;
+}
 
-pub struct World<W, S:Default>
+pub struct World<W:GameWorld>
 {
-    sprites:Vec<Sprite<S>>,
+    sprites:Vec<Sprite<W::Sprite>>,
     game:W
 }
 
-impl<W:Default, S:Default> Default for World<W, S> {
+impl<W:GameWorld> Default for World<W> {
     fn default() -> Self {
         Self {
             sprites:Vec::new(),
@@ -18,8 +20,8 @@ impl<W:Default, S:Default> Default for World<W, S> {
     }
 }
 
-impl<W, S:Default> World<W, S> {
-    pub fn new_sprite(&mut self) -> &mut Sprite<S> {
+impl<W:GameWorld> World<W> {
+    pub fn new_sprite(&mut self) -> &mut Sprite<W::Sprite> {
 
         let mut free:Option<SpriteID> = None;
         for sprite in &self.sprites {
@@ -60,11 +62,11 @@ impl<W, S:Default> World<W, S> {
         self.sprites.as_mut_slice()
     }*/
 
-    pub fn sprites_iter(&self) -> impl Iterator<Item = &Sprite<S>> {
+    pub fn sprites_iter(&self) -> impl Iterator<Item = &Sprite<W::Sprite>> {
         self.sprites.iter().filter(|x| x.in_use())
     }
 
-    pub fn sprites_iter_mut(&mut self) -> impl Iterator<Item = &mut Sprite<S>> {
+    pub fn sprites_iter_mut(&mut self) -> impl Iterator<Item = &mut Sprite<W::Sprite>> {
         self.sprites.iter_mut().filter(|x| x.in_use())
     }
 

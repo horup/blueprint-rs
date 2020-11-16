@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 glam = "0.10.1"
+ggez = "0.5.1"

@@ -3,7 +3,7 @@
 	"tasks": [
 		{
 			"type": "cargo",
-			"command": "test --release",
+			"command": "run --example simple --release",
 			"problemMatcher": [
 				"$rustc"
 			],

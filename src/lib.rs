@@ -1,5 +1,6 @@
 pub mod sprite;
 pub mod world;
+pub mod engine;
 
 #[cfg(test)]
 mod tests {

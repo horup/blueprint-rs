@@ -1,6 +1,10 @@
 pub mod sprite;
 pub mod world;
 pub mod engine;
+pub mod event;
+pub mod context;
+pub mod system;
+pub mod config;
 
 #[cfg(test)]
 mod tests {

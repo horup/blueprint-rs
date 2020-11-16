@@ -22,6 +22,7 @@ fn tick(ctx:&mut Context<SimpleWorld>)
     
     match ctx.event {
         blueprint::event::Event::Tick(delta) => {
+            println!("{}", delta);
             ctx.world.game_mut().timer += delta;
             println!("{}", ctx.world.game().timer);
         },
@@ -31,9 +32,6 @@ fn tick(ctx:&mut Context<SimpleWorld>)
 
 fn main() {
     let mut engine:Engine<SimpleWorld> = Engine::new();
-    engine.systems_mut().push(|ctx| {
-        println!("hello from closue");
-    });
 
     engine.systems_mut().push(tick);
     Engine::run(engine);

@@ -39,16 +39,19 @@ impl<W:GameWorld> Engine<W> {
 
 impl<W:GameWorld>  EventHandler for Engine<W>  {
     fn update(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
-        let event = Event::Tick(timer::average_delta(ctx).as_secs_f32());
-
-        for system in self.systems().clone() {
-            let mut context = Context {
-                event:&event,
-                world:&mut self.world
-            };
-
-            system(&mut context);
+        while timer::check_update_time(ctx, self.config.tick_rate_ps) {
+            let delta = 1.0 / self.config.tick_rate_ps as f32;  
+            let event = Event::Tick(delta);
+            for system in self.systems().clone() {
+                let mut context = Context {
+                    event:&event,
+                    world:&mut self.world
+                };
+    
+                system(&mut context);
+            }
         }
+       
         Result::Ok(())
     }
 

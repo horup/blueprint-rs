@@ -8,6 +8,7 @@ pub struct Engine<W:GameWorld> {
     world:World<W>,
     systems:Vec<System<W>>,
     textures:HashMap<u16, ImageGeneric<GlBackendSpec>>,
+    ctx:*mut ggez::Context,
     pub config:Config
 }
 
@@ -18,17 +19,30 @@ impl<W:GameWorld> Engine<W> {
             world:World::default(),
             systems:Vec::new(),
             config:Config::default(),
-            textures:HashMap::new()
+            textures:HashMap::new(),
+            ctx:std::ptr::null_mut()
         }
     }
 
     fn init(&mut self, ctx: &mut ggez::Context) {
+        self.ctx = ctx;
         let tex = include_bytes!("./resources/engine_spritesheet.png");
         let tex = image::load_from_memory(tex).unwrap();
         let tex = tex.to_rgba();
         let tex = graphics::Image::from_rgba8(ctx, tex.width() as u16, tex.height() as u16, &tex).unwrap();
         self.textures.insert(0, tex);
         // TODO: finish implmeneting of sprite sheet saving
+    }
+
+    pub fn load_texture<T:Into<u16>>(&mut self, bytes:&[u8], index:T) {
+        if !self.ctx.is_null() {
+            unsafe  {
+                let tex = image::load_from_memory(bytes).unwrap();
+                let tex = tex.to_rgba();
+                let tex = graphics::Image::from_rgba8(&mut *self.ctx, tex.width() as u16, tex.height() as u16, &tex).unwrap();
+                self.textures.insert(index.into(), tex);
+            }
+        }
     }
 
     pub fn world(&self) -> &World<W> {
@@ -57,6 +71,8 @@ impl<W:GameWorld> Engine<W> {
             Ok(_) => println!("Exited cleanly."),
             Err(e) => println!("Error occured: {}", e)
         }
+
+        engine.ctx = std::ptr::null_mut();
     }
 
     fn draw_debug(&mut self, ctx:&mut ggez::Context) -> ggez::GameResult {

@@ -35,6 +35,9 @@ fn main() {
     let mut s = engine.world_mut().new_sprite();
     
     engine.config.window_title = "Simple Example".into();
+    let tex = include_bytes!("spritesheet.png");
+    engine.load_texture(tex, 1 as u16);
+
     engine.systems_mut().push(tick);
     Engine::run(engine);
 }

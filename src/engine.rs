@@ -13,7 +13,6 @@ pub struct Engine<W:GameWorld> {
 }
 
 impl<W:GameWorld> Engine<W> {
-    // TODO: implement texture loading, spritesheets, etc
     pub fn new() -> Self {
         Self {
             world:World::default(),
@@ -113,6 +112,7 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
         // TODO: Implement draw
         // TODO: Implement interpolation
         // BUG: Alpha sometimes returns a big number?
+        // TODO: implement sprite type
 
         graphics::clear(ctx, Color::from_rgb(0, 0, 0) );
         

@@ -13,11 +13,21 @@ pub struct Engine<W:GameWorld> {
 impl<W:GameWorld> Engine<W> {
     // TODO: implement texture loading, spritesheets, etc
     pub fn new() -> Self {
+
+        
         Self {
             world:World::default(),
             systems:Vec::new(),
             config:Config::default()
         }
+    }
+
+    fn init(&mut self, ctx: &mut ggez::Context) {
+        let sprites = include_bytes!("./resources/engine_spritesheet.png");
+        let sprites = image::load_from_memory(sprites).unwrap();
+        let sprites = sprites.to_rgba();
+        let sprites = graphics::Image::from_rgba8(ctx, sprites.width() as u16, sprites.height() as u16, &sprites).unwrap();
+        // TODO: finish implmeneting of sprite sheet saving
     }
     
     pub fn systems_mut(&mut self) -> &mut Vec<System<W>> {

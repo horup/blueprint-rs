@@ -1,11 +1,13 @@
-use ggez::{graphics::Color, ContextBuilder, event::{self, EventHandler}, graphics::{self, DrawParam}, mint::{Vector2, Point2}, mint::{self}, timer};
-use glam::Vec2;
+use std::collections::HashMap;
+
+use ggez::{ContextBuilder, event::{self, EventHandler}, graphics::Color, graphics::{self, DrawParam, Image}, mint::{Vector2, Point2}, mint::{self}, timer};
+use ggez::graphics::{GlBackendSpec, ImageGeneric, Rect};
 
 use crate::{config::Config, context::Context, event::Event, system::System, world::GameWorld, world::World};
-
 pub struct Engine<W:GameWorld> {
     world:World<W>,
     systems:Vec<System<W>>,
+    textures:HashMap<u16, ImageGeneric<GlBackendSpec>>,
     pub config:Config
 }
 
@@ -15,16 +17,26 @@ impl<W:GameWorld> Engine<W> {
         Self {
             world:World::default(),
             systems:Vec::new(),
-            config:Config::default()
+            config:Config::default(),
+            textures:HashMap::new()
         }
     }
 
     fn init(&mut self, ctx: &mut ggez::Context) {
-        let sprites = include_bytes!("./resources/engine_spritesheet.png");
-        let sprites = image::load_from_memory(sprites).unwrap();
-        let sprites = sprites.to_rgba();
-        let sprites = graphics::Image::from_rgba8(ctx, sprites.width() as u16, sprites.height() as u16, &sprites).unwrap();
+        let tex = include_bytes!("./resources/engine_spritesheet.png");
+        let tex = image::load_from_memory(tex).unwrap();
+        let tex = tex.to_rgba();
+        let tex = graphics::Image::from_rgba8(ctx, tex.width() as u16, tex.height() as u16, &tex).unwrap();
+        self.textures.insert(0, tex);
         // TODO: finish implmeneting of sprite sheet saving
+    }
+
+    pub fn world(&self) -> &World<W> {
+        &self.world
+    }
+
+    pub fn world_mut(&mut self) -> &mut World<W> {
+        &mut self.world
     }
     
     pub fn systems_mut(&mut self) -> &mut Vec<System<W>> {
@@ -88,6 +100,15 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
 
         graphics::clear(ctx, Color::from_rgb(0, 0, 0) );
         
+        for sprite in self.world.sprites_iter() {
+            if let Some(img) = self.textures.get(&0) {
+                graphics::draw(ctx, img, DrawParam {
+                    ..DrawParam::default()
+                })?;
+            }
+            
+        }
+
         self.draw_debug(ctx)?;
 
         graphics::present(ctx)?;

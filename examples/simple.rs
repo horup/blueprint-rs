@@ -32,6 +32,8 @@ fn tick(ctx:&mut Context<SimpleWorld>)
 
 fn main() {
     let mut engine:Engine<SimpleWorld> = Engine::new();
+    let mut s = engine.world_mut().new_sprite();
+    
     engine.config.window_title = "Simple Example".into();
     engine.systems_mut().push(tick);
     Engine::run(engine);

@@ -5,6 +5,7 @@ pub mod event;
 pub mod context;
 pub mod system;
 pub mod config;
+pub mod spritetype;
 
 #[cfg(test)]
 mod tests {

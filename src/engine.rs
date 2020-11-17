@@ -9,6 +9,7 @@ pub struct Engine<W:GameWorld> {
     pub config:Config
 }
 
+// TODO: added support for title of game
 impl<W:GameWorld> Engine<W> {
     // TODO: implement texture loading, spritesheets, etc
     pub fn new() -> Self {
@@ -73,9 +74,7 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
 
     fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
         // TODO: Implement draw
-        // TODO: Implement FPS 
         // TODO: Implement interpolation
-        // TODO: Implement debug view with fps etc
         // BUG: Alpha sometimes returns a big number?
 
         graphics::clear(ctx, Color::from_rgb(0, 0, 0) );

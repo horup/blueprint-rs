@@ -9,12 +9,9 @@ pub struct Engine<W:GameWorld> {
     pub config:Config
 }
 
-// TODO: added support for title of game
 impl<W:GameWorld> Engine<W> {
     // TODO: implement texture loading, spritesheets, etc
     pub fn new() -> Self {
-
-        
         Self {
             world:World::default(),
             systems:Vec::new(),
@@ -42,6 +39,7 @@ impl<W:GameWorld> Engine<W> {
         let mut engine = engine;
         let (mut ctx, mut event_loop) = ContextBuilder::new("game_id", "author")
         .build().expect("could not create context");
+        engine.init(&mut ctx);
 
         match event::run(&mut ctx, &mut event_loop, &mut engine) {
             Ok(_) => println!("Exited cleanly."),
@@ -83,6 +81,7 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
 
 
     fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
+        graphics::set_window_title(ctx, &self.config.window_title);
         // TODO: Implement draw
         // TODO: Implement interpolation
         // BUG: Alpha sometimes returns a big number?

@@ -1,4 +1,5 @@
-use ggez::{ContextBuilder, event::{self, EventHandler}, graphics, timer};
+use ggez::{graphics::Color, ContextBuilder, event::{self, EventHandler}, graphics::{self, DrawParam}, mint::{Vector2, Point2}, mint::{self}, timer};
+use glam::Vec2;
 
 use crate::{config::Config, context::Context, event::Event, system::System, world::GameWorld, world::World};
 
@@ -9,6 +10,7 @@ pub struct Engine<W:GameWorld> {
 }
 
 impl<W:GameWorld> Engine<W> {
+    // TODO: implement texture loading, spritesheets, etc
     pub fn new() -> Self {
         Self {
             world:World::default(),
@@ -35,6 +37,19 @@ impl<W:GameWorld> Engine<W> {
             Err(e) => println!("Error occured: {}", e)
         }
     }
+
+    fn draw_debug(&mut self, ctx:&mut ggez::Context) -> ggez::GameResult {
+        let alpha = timer::remaining_update_time(ctx).as_millis() as f32 / (1000.0 / self.config.tick_rate_ps as f32);
+        let text = graphics::Text::new(format!("FPS: {}", timer::fps(ctx) as i32));
+        graphics::draw(ctx, &text, DrawParam {
+            dest:[0.0, 0.0].into(),
+            ..Default::default()
+        })?;
+
+        Result::Ok(())
+    }
+
+
 }
 
 impl<W:GameWorld>  EventHandler for Engine<W>  {
@@ -55,7 +70,19 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
         Result::Ok(())
     }
 
-    fn draw(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
+
+    fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
+        // TODO: Implement draw
+        // TODO: Implement FPS 
+        // TODO: Implement interpolation
+        // TODO: Implement debug view with fps etc
+        // BUG: Alpha sometimes returns a big number?
+
+        graphics::clear(ctx, Color::from_rgb(0, 0, 0) );
+        
+        self.draw_debug(ctx)?;
+
+        graphics::present(ctx)?;
         Result::Ok(())
     }
 }

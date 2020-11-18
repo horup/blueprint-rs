@@ -32,11 +32,13 @@ fn tick(ctx:&mut Context<SimpleWorld>)
 
 fn main() {
     let mut engine:Engine<SimpleWorld> = Engine::new();
-    let mut s = engine.world_mut().new_sprite();
-    
+    engine.load_texture(include_bytes!("spritesheet.png"), 1 as u16);
+
     engine.config.window_title = "Simple Example".into();
-    let tex = include_bytes!("spritesheet.png");
-    engine.load_texture(tex, 1 as u16);
+
+    let mut s = engine.world_mut().new_sprite();
+    s.pos_mut().x = 10.0;
+    s.pos_mut().y = 20.0;
 
     engine.systems_mut().push(tick);
     Engine::run(engine);

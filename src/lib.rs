@@ -6,6 +6,7 @@ pub mod context;
 pub mod system;
 pub mod config;
 pub mod spritetype;
+pub mod math;
 
 #[cfg(test)]
 mod tests {

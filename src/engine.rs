@@ -2,13 +2,15 @@ use std::collections::HashMap;
 
 use ggez::{ContextBuilder, event::{self, EventHandler}, graphics::Color, graphics::{self, DrawParam, Image}, mint::{Vector2, Point2}, mint::{self}, timer};
 use ggez::graphics::{GlBackendSpec, ImageGeneric, Rect};
+use glam::Vec2;
 
-use crate::{config::Config, context::Context, event::Event, system::System, world::GameWorld, world::World};
+use crate::{config::Config, context::Context, event::Event, math::Rect2, spritetype::SpriteType, system::System, world::GameWorld, world::World};
 pub struct Engine<W:GameWorld> {
     world:World<W>,
     systems:Vec<System<W>>,
-    textures:HashMap<u16, ImageGeneric<GlBackendSpec>>,
+    textures:HashMap<u32, ImageGeneric<GlBackendSpec>>,
     ctx:*mut ggez::Context,
+    sprite_types:HashMap<u32, SpriteType>,
     pub config:Config
 }
 
@@ -19,7 +21,8 @@ impl<W:GameWorld> Engine<W> {
             systems:Vec::new(),
             config:Config::default(),
             textures:HashMap::new(),
-            ctx:std::ptr::null_mut()
+            ctx:std::ptr::null_mut(),
+            sprite_types:HashMap::new()
         }
     }
 
@@ -30,10 +33,18 @@ impl<W:GameWorld> Engine<W> {
         let tex = tex.to_rgba();
         let tex = graphics::Image::from_rgba8(ctx, tex.width() as u16, tex.height() as u16, &tex).unwrap();
         self.textures.insert(0, tex);
+
+        let sprite_type = SpriteType {
+            texture_id:0,
+            frames:Vec::from([Rect2::new(0, 0, 16, 16), Rect2::new(16, 0, 16, 16)]),
+            animation:crate::spritetype::Animation::LoopBackForth,
+            animation_speed_ps:1.0
+        };
         // TODO: finish implmeneting of sprite sheet saving
+        self.load_sprite_type(sprite_type, 0);
     }
 
-    pub fn load_texture<T:Into<u16>>(&mut self, bytes:&[u8], index:T) {
+    pub fn load_texture<T:Into<u32>>(&mut self, bytes:&[u8], index:T) {
         if !self.ctx.is_null() {
             unsafe  {
                 let tex = image::load_from_memory(bytes).unwrap();
@@ -42,6 +53,14 @@ impl<W:GameWorld> Engine<W> {
                 self.textures.insert(index.into(), tex);
             }
         }
+    }
+
+    pub fn load_sprite_type<T:Into<SpriteType>>(&mut self, sprite_type:T, index:u32) {
+        self.sprite_types.insert(index, sprite_type.into());
+    }
+
+    pub fn get_sprite_type(&self, index:u32) -> Option<&SpriteType> {
+        self.sprite_types.get(&index)
     }
 
     pub fn world(&self) -> &World<W> {
@@ -117,12 +136,26 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
         graphics::clear(ctx, Color::from_rgb(0, 0, 0) );
         
         for sprite in self.world.sprites_iter() {
-            if let Some(img) = self.textures.get(&0) {
-                graphics::draw(ctx, img, DrawParam {
-                    ..DrawParam::default()
-                })?;
+            if let Some(sprite_type) = self.get_sprite_type(sprite.sprite_type_id()) {
+                if sprite_type.frames.len() > 0 {
+                    if let Some(img) = self.textures.get(&sprite_type.texture_id) {
+                        let frame = *sprite.frame() as usize % sprite_type.frames.len();
+                        if let Some(frame) = sprite_type.frames.get(frame) {
+                            let mut src = Rect::new(0.0, 0.0, img.width() as f32, img.height() as f32);
+                            src.x = frame.x as f32 / src.w;
+                            src.y = frame.y as f32 / src.h;
+                            src.w = frame.w as f32 / src.w;
+                            src.h = frame.h as f32 / src.h;
+                            let dest:Point2<f32> = Vec2::new(sprite.pos().x, sprite.pos().y).into();
+                            graphics::draw(ctx, img, DrawParam {
+                                dest,
+                                src,
+                                ..DrawParam::default()
+                            })?;
+                        }
+                    }
+                }
             }
-            
         }
 
         self.draw_debug(ctx)?;

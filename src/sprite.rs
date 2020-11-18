@@ -16,7 +16,6 @@ impl SpriteID {
 }
 
 // TODO: Refactor 
-// TODO: frame, width, etc. support
 pub struct Sprite<S> {
     id:SpriteID,
     in_use:bool,

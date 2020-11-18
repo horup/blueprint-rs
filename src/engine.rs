@@ -45,7 +45,6 @@ impl<W:GameWorld> Engine<W> {
             animation:crate::spritetype::Animation::LoopBackForth,
             animation_speed_ps:1.0
         };
-        // TODO: finish implmeneting of sprite sheet saving
         self.load_sprite_type(sprite_type, 0);
     }
 
@@ -142,11 +141,8 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
 
     fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
         graphics::set_window_title(ctx, &self.config.window_title);
-        // TODO: Implement draw
-        // BUG: Fix texture interpolation
         // TODO: Implement interpolation
         // BUG: Alpha sometimes returns a big number?
-        // TODO: Finish animation of sprite
         graphics::clear(ctx, Color::from_rgb(0, 0, 0) );
 
         let config = &self.config;

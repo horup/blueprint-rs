@@ -14,6 +14,8 @@ pub struct Engine<W:GameWorld> {
     pub config:Config
 }
 
+// TODO: move stuff to own types as to avoid borrow checking
+
 impl<W:GameWorld> Engine<W> {
     pub fn new() -> Self {
         Self {
@@ -138,9 +140,41 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
         // TODO: Finish animation of sprite
         graphics::clear(ctx, Color::from_rgb(0, 0, 0) );
 
-        let sprite_types = self.sprite_types.clone();
+        /*let sprite_types = self.sprite_types.clone();
         for sprite in self.world.sprites_iter_mut() {
             sprite.frame += timer::average_delta(ctx).as_secs_f32();
+        }*/
+        let dt = timer::average_delta(ctx).as_secs_f32();
+        for sprite in self.world.sprites_iter_mut() {
+            if let Some(sprite_type) = self.sprite_types.get(&sprite.sprite_type_id) {
+                match sprite_type.animation 
+                {
+                    crate::spritetype::Animation::None => {}
+                    crate::spritetype::Animation::Loop => {
+                        sprite.frame += dt;
+                        if sprite.frame > sprite_type.frames.len() as f32 {
+                            sprite.frame = 0.0;
+                        }
+                    }
+                    crate::spritetype::Animation::LoopBackForth => {
+                        if sprite.animation_reverse { sprite.frame -= dt} else { sprite.frame += dt};
+                        if sprite.frame > sprite_type.frames.len() as f32 {
+                            sprite.frame = sprite_type.frames.len() as f32 - 1.0;
+                            sprite.animation_reverse = true;
+                        }
+                        else if sprite.frame <= 0.0 {
+                            sprite.frame = 0.0;
+                            sprite.animation_reverse = false;
+                        }
+                    }
+                    crate::spritetype::Animation::ForwardStop => {
+                        sprite.frame += dt;
+                        if sprite.frame > sprite_type.frames.len() as f32 {
+                            sprite.frame = sprite_type.frames.len() as f32 - 1.0;
+                        }
+                    }
+                }
+            }
         }
         
         for sprite in self.world.sprites_iter() {

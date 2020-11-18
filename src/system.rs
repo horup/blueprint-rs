@@ -1,3 +1,3 @@
-use crate::{context::Context, world::GameWorld};
+use crate::{context::Context};
 
-pub type System<W:GameWorld> = fn(&mut Context<W>);
+pub type System<W> = fn(&mut Context<W>);

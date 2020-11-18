@@ -4,14 +4,15 @@ use ggez::{ContextBuilder, event::{self, EventHandler}, graphics::Color, graphic
 use ggez::graphics::{GlBackendSpec, ImageGeneric, Rect};
 use glam::Vec2;
 
-use crate::{config::Config, context::Context, event::Event, math::Rect2, sprite::Sprite, spritetype::SpriteType, system::System, world::GameWorld, world::World};
+use crate::{camera::Camera, config::Config, context::Context, event::Event, math::Rect2, sprite::Sprite, spritetype::SpriteType, system::System, world::GameWorld, world::World};
 pub struct Engine<W:GameWorld> {
     world:World<W>,
     systems:Vec<System<W>>,
     textures:HashMap<u32, ImageGeneric<GlBackendSpec>>,
     ctx:*mut ggez::Context,
     pub sprite_types:HashMap<u32, SpriteType>,
-    pub config:Config
+    pub config:Config,
+    pub camera:Camera
 }
 
 // TODO: move stuff to own types as to avoid borrow checking
@@ -24,7 +25,8 @@ impl<W:GameWorld> Engine<W> {
             config:Config::default(),
             textures:HashMap::new(),
             ctx:std::ptr::null_mut(),
-            sprite_types:HashMap::new()
+            sprite_types:HashMap::new(),
+            camera:Camera::default()
         }
     }
 
@@ -90,6 +92,9 @@ impl<W:GameWorld> Engine<W> {
         let (mut ctx, mut event_loop) = ContextBuilder::new("game_id", "author")
         .build().expect("could not create context");
         engine.init(&mut ctx);
+        let r = graphics::screen_coordinates(&ctx);
+        engine.config.width = r.w;
+        engine.config.height = r.h;
 
         match event::run(&mut ctx, &mut event_loop, &mut engine) {
             Ok(_) => println!("Exited cleanly."),
@@ -100,6 +105,7 @@ impl<W:GameWorld> Engine<W> {
     }
 
     fn draw_debug(&mut self, ctx:&mut ggez::Context) -> ggez::GameResult {
+        graphics::set_screen_coordinates(ctx, Rect::new(0.0, 0.0, self.config.width, self.config.height));
         let alpha = timer::remaining_update_time(ctx).as_millis() as f32 / (1000.0 / self.config.tick_rate_ps as f32);
         let text = graphics::Text::new(format!("FPS: {}", timer::fps(ctx) as i32));
         graphics::draw(ctx, &text, DrawParam {
@@ -135,10 +141,18 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
     fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
         graphics::set_window_title(ctx, &self.config.window_title);
         // TODO: Implement draw
+        // BUG: Fix texture interpolation
         // TODO: Implement interpolation
         // BUG: Alpha sometimes returns a big number?
         // TODO: Finish animation of sprite
         graphics::clear(ctx, Color::from_rgb(0, 0, 0) );
+
+        let config = &self.config;
+        let camera = &self.camera;
+        let mut r = Rect::new(camera.pos.x, camera.pos.x, config.width / camera.zoom, config.height / camera.zoom);
+        r.x -= r.w / 2.0;
+        r.y -= r.h / 2.0;
+        graphics::set_screen_coordinates(ctx, r)?;
 
         /*let sprite_types = self.sprite_types.clone();
         for sprite in self.world.sprites_iter_mut() {

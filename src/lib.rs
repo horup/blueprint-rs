@@ -7,6 +7,7 @@ pub mod system;
 pub mod config;
 pub mod spritetype;
 pub mod math;
+pub mod camera;
 
 #[cfg(test)]
 mod tests {

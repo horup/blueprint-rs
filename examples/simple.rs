@@ -37,8 +37,8 @@ fn main() {
     engine.config.window_title = "Simple Example".into();
 
     let mut s = engine.world_mut().new_sprite();
-    s.pos_mut().x = 10.0;
-    s.pos_mut().y = 20.0;
+    s.pos.x = 10.0;
+    s.pos.y = 20.0;
 
     engine.systems_mut().push(tick);
     Engine::run(engine);

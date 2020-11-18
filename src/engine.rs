@@ -4,13 +4,13 @@ use ggez::{ContextBuilder, event::{self, EventHandler}, graphics::Color, graphic
 use ggez::graphics::{GlBackendSpec, ImageGeneric, Rect};
 use glam::Vec2;
 
-use crate::{config::Config, context::Context, event::Event, math::Rect2, spritetype::SpriteType, system::System, world::GameWorld, world::World};
+use crate::{config::Config, context::Context, event::Event, math::Rect2, sprite::Sprite, spritetype::SpriteType, system::System, world::GameWorld, world::World};
 pub struct Engine<W:GameWorld> {
     world:World<W>,
     systems:Vec<System<W>>,
     textures:HashMap<u32, ImageGeneric<GlBackendSpec>>,
     ctx:*mut ggez::Context,
-    sprite_types:HashMap<u32, SpriteType>,
+    pub sprite_types:HashMap<u32, SpriteType>,
     pub config:Config
 }
 
@@ -61,6 +61,10 @@ impl<W:GameWorld> Engine<W> {
 
     pub fn get_sprite_type(&self, index:u32) -> Option<&SpriteType> {
         self.sprite_types.get(&index)
+    }
+
+    pub fn get_sprite_type_mut(&mut self, index:u32) -> Option<&mut SpriteType> {
+        self.sprite_types.get_mut(&index)
     }
 
     pub fn world(&self) -> &World<W> {
@@ -134,19 +138,24 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
         // TODO: implement sprite type
 
         graphics::clear(ctx, Color::from_rgb(0, 0, 0) );
+
+        let sprite_types = self.sprite_types.clone();
+        for sprite in self.world.sprites_iter_mut() {
+            sprite.frame += timer::average_delta(ctx).as_secs_f32();
+        }
         
         for sprite in self.world.sprites_iter() {
-            if let Some(sprite_type) = self.get_sprite_type(sprite.sprite_type_id()) {
+            if let Some(sprite_type) = self.get_sprite_type(sprite.sprite_type_id) {
                 if sprite_type.frames.len() > 0 {
                     if let Some(img) = self.textures.get(&sprite_type.texture_id) {
-                        let frame = *sprite.frame() as usize % sprite_type.frames.len();
+                        let frame = sprite.frame as usize % sprite_type.frames.len();
                         if let Some(frame) = sprite_type.frames.get(frame) {
                             let mut src = Rect::new(0.0, 0.0, img.width() as f32, img.height() as f32);
                             src.x = frame.x as f32 / src.w;
                             src.y = frame.y as f32 / src.h;
                             src.w = frame.w as f32 / src.w;
                             src.h = frame.h as f32 / src.h;
-                            let dest:Point2<f32> = Vec2::new(sprite.pos().x, sprite.pos().y).into();
+                            let dest:Point2<f32> = Vec2::new(sprite.pos.x, sprite.pos.y).into();
                             graphics::draw(ctx, img, DrawParam {
                                 dest,
                                 src,

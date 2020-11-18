@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use ggez::{ContextBuilder, event::{self, EventHandler}, graphics::Color, graphics::{self, DrawParam, Image}, mint::{Vector2, Point2}, mint::{self}, timer};
+use ggez::{ContextBuilder, event::{self, EventHandler}, graphics::Color, graphics::{self, DrawParam, FilterMode, Image}, mint::{Vector2, Point2}, mint::{self}, timer};
 use ggez::graphics::{GlBackendSpec, ImageGeneric, Rect};
 use glam::Vec2;
 
@@ -32,6 +32,7 @@ impl<W:GameWorld> Engine<W> {
 
     fn init(&mut self, ctx: &mut ggez::Context) {
         self.ctx = ctx;
+        graphics::set_default_filter(ctx, graphics::FilterMode::Nearest);
         let tex = include_bytes!("./resources/engine_spritesheet.png");
         let tex = image::load_from_memory(tex).unwrap();
         let tex = tex.to_rgba();
@@ -53,7 +54,8 @@ impl<W:GameWorld> Engine<W> {
             unsafe  {
                 let tex = image::load_from_memory(bytes).unwrap();
                 let tex = tex.to_rgba();
-                let tex = graphics::Image::from_rgba8(&mut *self.ctx, tex.width() as u16, tex.height() as u16, &tex).unwrap();
+                let mut tex = graphics::Image::from_rgba8(&mut *self.ctx, tex.width() as u16, tex.height() as u16, &tex).unwrap();
+                tex.set_filter(FilterMode::Nearest);
                 self.textures.insert(index.into(), tex);
             }
         }

@@ -17,7 +17,7 @@ impl<W:GameWorld> Engine<W> {
 
 
 
-    pub fn ggez_draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
+    pub(super) fn ggez_draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
         graphics::set_window_title(ctx, &self.config.window_title);
         // TODO: Implement interpolation
         // BUG: Alpha sometimes returns a big number?

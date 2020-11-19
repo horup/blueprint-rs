@@ -1,10 +1,10 @@
 mod draw;
 mod update;
 use std::collections::HashMap;
-use ggez::{ContextBuilder, event::{self, EventHandler}, graphics::Color, graphics::{self, DrawParam, FilterMode, Image}, mint::{Vector2, Point2}, mint::{self}, timer};
-use ggez::graphics::{GlBackendSpec, ImageGeneric, Rect};
-use glam::Vec2;
-use crate::{camera::Camera, config::Config, context::Context, event::Event, math::Rect2, sprite::Sprite, spritetype::SpriteType, system::System, world::GameWorld, world::World};
+use ggez::{ContextBuilder, event::{self, EventHandler}, graphics::{self, FilterMode}};
+use ggez::graphics::{GlBackendSpec, ImageGeneric};
+
+use crate::{camera::Camera, config::Config, math::Rect2, spritetype::SpriteType, system::System, world::GameWorld, world::World};
 pub struct Engine<W:GameWorld> {
     pub world:World<W>,
     pub systems:Vec<System<W>>,
@@ -14,8 +14,6 @@ pub struct Engine<W:GameWorld> {
     textures:HashMap<u32, ImageGeneric<GlBackendSpec>>,
     ctx:*mut ggez::Context,
 }
-
-// TODO: move stuff to own types as to avoid borrow checking
 
 impl<W:GameWorld> Engine<W> {
     pub fn new() -> Self {

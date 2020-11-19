@@ -6,7 +6,6 @@ use super::Engine;
 impl<W:GameWorld> Engine<W> {
     fn draw_debug(&mut self, ctx:&mut ggez::Context) -> ggez::GameResult {
         graphics::set_screen_coordinates(ctx, Rect::new(0.0, 0.0, self.config.width, self.config.height))?;
-        let alpha = timer::remaining_update_time(ctx).as_millis() as f32 / (1000.0 / self.config.tick_rate_ps as f32);
         let text = graphics::Text::new(format!("FPS: {}", timer::fps(ctx) as i32));
         graphics::draw(ctx, &text, DrawParam {
             dest:[0.0, 0.0].into(),

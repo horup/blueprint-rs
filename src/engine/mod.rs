@@ -33,7 +33,7 @@ impl<W:GameWorld> Engine<W> {
     fn init(&mut self, ctx: &mut ggez::Context) {
         self.ctx = ctx;
         graphics::set_default_filter(ctx, graphics::FilterMode::Nearest);
-        let tex = include_bytes!("./resources/engine_spritesheet.png");
+        let tex = include_bytes!("../resources/engine_spritesheet.png");
         let tex = image::load_from_memory(tex).unwrap();
         let tex = tex.to_rgba();
         let tex = graphics::Image::from_rgba8(ctx, tex.width() as u16, tex.height() as u16, &tex).unwrap();

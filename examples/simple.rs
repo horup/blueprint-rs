@@ -22,9 +22,7 @@ fn tick(ctx:&mut Context<SimpleWorld>)
     
     match ctx.event {
         blueprint::event::Event::Tick(delta) => {
-            println!("{}", delta);
             ctx.world.game_mut().timer += delta;
-            println!("{}", ctx.world.game().timer);
         },
         _ => {}
     }
@@ -36,10 +34,10 @@ fn main() {
 
     engine.config.window_title = "Simple Example".into();
 
-    let mut s = engine.world_mut().new_sprite();
+    let mut s = engine.world.new_sprite();
     s.pos.x = 10.0;
     s.pos.y = 20.0;
 
-    engine.systems_mut().push(tick);
+    engine.systems.push(tick);
     Engine::run(engine);
 }

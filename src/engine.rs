@@ -6,13 +6,13 @@ use glam::Vec2;
 
 use crate::{camera::Camera, config::Config, context::Context, event::Event, math::Rect2, sprite::Sprite, spritetype::SpriteType, system::System, world::GameWorld, world::World};
 pub struct Engine<W:GameWorld> {
-    world:World<W>,
-    systems:Vec<System<W>>,
-    textures:HashMap<u32, ImageGeneric<GlBackendSpec>>,
-    ctx:*mut ggez::Context,
+    pub world:World<W>,
+    pub systems:Vec<System<W>>,
     pub sprite_types:HashMap<u32, SpriteType>,
     pub config:Config,
-    pub camera:Camera
+    pub camera:Camera,
+    textures:HashMap<u32, ImageGeneric<GlBackendSpec>>,
+    ctx:*mut ggez::Context,
 }
 
 // TODO: move stuff to own types as to avoid borrow checking
@@ -43,9 +43,9 @@ impl<W:GameWorld> Engine<W> {
             texture_id:0,
             frames:Vec::from([Rect2::new(0, 0, 16, 16), Rect2::new(16, 0, 16, 16)]),
             animation:crate::spritetype::Animation::LoopBackForth,
-            animation_speed_ps:1.0
+            frames_per_second:1.0
         };
-        self.load_sprite_type(sprite_type, 0);
+        self.sprite_types.insert(0, sprite_type);
     }
 
     pub fn load_texture<T:Into<u32>>(&mut self, bytes:&[u8], index:T) {
@@ -58,34 +58,6 @@ impl<W:GameWorld> Engine<W> {
                 self.textures.insert(index.into(), tex);
             }
         }
-    }
-
-    pub fn load_sprite_type<T:Into<SpriteType>>(&mut self, sprite_type:T, index:u32) {
-        self.sprite_types.insert(index, sprite_type.into());
-    }
-
-    pub fn get_sprite_type(&self, index:u32) -> Option<&SpriteType> {
-        self.sprite_types.get(&index)
-    }
-
-    pub fn get_sprite_type_mut(&mut self, index:u32) -> Option<&mut SpriteType> {
-        self.sprite_types.get_mut(&index)
-    }
-
-    pub fn world(&self) -> &World<W> {
-        &self.world
-    }
-
-    pub fn world_mut(&mut self) -> &mut World<W> {
-        &mut self.world
-    }
-    
-    pub fn systems_mut(&mut self) -> &mut Vec<System<W>> {
-        &mut self.systems
-    }
-    
-    pub fn systems(&self) -> &Vec<System<W>> {
-        &self.systems
     }
 
     pub fn run(engine:Self) {
@@ -106,7 +78,7 @@ impl<W:GameWorld> Engine<W> {
     }
 
     fn draw_debug(&mut self, ctx:&mut ggez::Context) -> ggez::GameResult {
-        graphics::set_screen_coordinates(ctx, Rect::new(0.0, 0.0, self.config.width, self.config.height));
+        graphics::set_screen_coordinates(ctx, Rect::new(0.0, 0.0, self.config.width, self.config.height))?;
         let alpha = timer::remaining_update_time(ctx).as_millis() as f32 / (1000.0 / self.config.tick_rate_ps as f32);
         let text = graphics::Text::new(format!("FPS: {}", timer::fps(ctx) as i32));
         graphics::draw(ctx, &text, DrawParam {
@@ -125,7 +97,7 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
         while timer::check_update_time(ctx, self.config.tick_rate_ps) {
             let delta = 1.0 / self.config.tick_rate_ps as f32;  
             let event = Event::Tick(delta);
-            for system in self.systems().clone() {
+            for system in self.systems.clone() {
                 let mut context = Context {
                     event:&event,
                     world:&mut self.world
@@ -163,24 +135,26 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
                 {
                     crate::spritetype::Animation::None => {}
                     crate::spritetype::Animation::Loop => {
-                        sprite.frame += dt;
+                        sprite.frame += dt * sprite_type.frames_per_second;
+                        println!("{}", sprite_type.frames_per_second);
                         if sprite.frame > sprite_type.frames.len() as f32 {
                             sprite.frame = 0.0;
                         }
                     }
                     crate::spritetype::Animation::LoopBackForth => {
+                        let dt = dt * sprite_type.frames_per_second;
                         if sprite.animation_reverse { sprite.frame -= dt} else { sprite.frame += dt};
                         if sprite.frame > sprite_type.frames.len() as f32 {
                             sprite.frame = sprite_type.frames.len() as f32 - 1.0;
                             sprite.animation_reverse = true;
                         }
                         else if sprite.frame <= 0.0 {
-                            sprite.frame = 0.0;
+                            sprite.frame = 0.99;
                             sprite.animation_reverse = false;
                         }
                     }
                     crate::spritetype::Animation::ForwardStop => {
-                        sprite.frame += dt;
+                        sprite.frame += dt * sprite_type.frames_per_second;
                         if sprite.frame > sprite_type.frames.len() as f32 {
                             sprite.frame = sprite_type.frames.len() as f32 - 1.0;
                         }
@@ -190,7 +164,7 @@ impl<W:GameWorld>  EventHandler for Engine<W>  {
         }
         
         for sprite in self.world.sprites_iter() {
-            if let Some(sprite_type) = self.get_sprite_type(sprite.sprite_type_id) {
+            if let Some(sprite_type) = self.sprite_types.get(&sprite.sprite_type_id) {
                 if sprite_type.frames.len() > 0 {
                     if let Some(img) = self.textures.get(&sprite_type.texture_id) {
                         let frame = sprite.frame as usize % sprite_type.frames.len();

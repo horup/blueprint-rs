@@ -16,6 +16,6 @@ impl Default for Animation {
 pub struct SpriteType {
     pub texture_id:u32,
     pub frames:Vec<Rect2<u16>>,
-    pub animation_speed_ps:f32,
+    pub frames_per_second:f32,
     pub animation:Animation
 }

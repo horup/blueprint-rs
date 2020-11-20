@@ -8,6 +8,7 @@ pub mod config;
 pub mod spritetype;
 pub mod math;
 pub mod camera;
+pub mod collection;
 
 #[cfg(test)]
 mod tests {

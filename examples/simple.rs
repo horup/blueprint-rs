@@ -28,11 +28,16 @@ fn tick(ctx:&mut Context<SimpleWorld>)
     }
 }
 
+mod sprites {
+    pub const PLAYER:u32 = 1;
+    pub const ZOMBIE:u32 = 2;
+}
+
 fn main() {
     let mut engine:Engine<SimpleWorld> = Engine::new();
     engine.camera.zoom = 32.0;
     engine.load_texture(include_bytes!("spritesheet.png"), 1 as u16);
-    engine.sprite_types.insert(1, SpriteType {
+    engine.sprite_types.insert(sprites::PLAYER, SpriteType {
         animation : blueprint::spritetype::Animation::LoopBackForth,
         frames:[Rect2::new(0.0, 0.0, 16.0, 16.0), Rect2::new(0.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
@@ -41,7 +46,7 @@ fn main() {
         texture_id:1
     });
 
-    engine.sprite_types.insert(2, SpriteType {
+    engine.sprite_types.insert(sprites::ZOMBIE, SpriteType {
         animation : blueprint::spritetype::Animation::LoopBackForth,
         frames:[Rect2::new(16.0, 0.0, 16.0, 16.0), Rect2::new(16.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
@@ -53,13 +58,13 @@ fn main() {
     engine.config.window_title = "Simple Example".into();
 
     let mut s = engine.world.new_sprite();
-    s.sprite_type_id = 1;
+    s.sprite_type_id = sprites::PLAYER;
     s.pos.x = 0.0;
     s.pos.y = 0.0;
 
     let mut spawn_zombie = |x,y| {
         let mut s = engine.world.new_sprite();
-        s.sprite_type_id = 2;
+        s.sprite_type_id = sprites::ZOMBIE;
         s.frame = x % 10.0;
         s.pos.x = x;
         s.pos.y = y;

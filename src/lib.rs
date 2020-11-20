@@ -20,6 +20,7 @@ mod tests {
         type Sprite = ();
         type Event = ();
         type Art = ();
+        type Texture = ();
     }
 
     #[test]

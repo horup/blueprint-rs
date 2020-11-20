@@ -6,6 +6,7 @@ pub trait GameWorld : Default {
     type Sprite : Default;
     type Event;
     type Art : Copy + Clone + Eq + PartialEq + Hash;
+    type Texture : Copy + Clone + Eq + PartialEq + Hash;
 }
 
 

@@ -1,4 +1,4 @@
-use crate::math::Rect2;
+use crate::{world::GameWorld, math::Rect2};
 
 #[derive(Debug, Copy, Clone)]
 pub enum Animation {
@@ -15,8 +15,8 @@ impl Default for Animation {
 
 // TODO: added origin
 #[derive(Clone, Default)]
-pub struct Art {
-    pub texture_id:u32,
+pub struct Art<W:GameWorld> {
+    pub texture_id:W::Texture,
     pub frames:Vec<Rect2<f32>>,
     pub frames_per_second:f32,
     pub animation:Animation,

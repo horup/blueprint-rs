@@ -9,10 +9,10 @@ use crate::{camera::Camera, collection::Collection, config::Config, math::Rect2,
 pub struct Engine<W:GameWorld> {
     pub world:World<W>,
     pub systems:Vec<System<W>>,
-    pub art:Collection<W::Art, Art>,
+    pub art:Collection<W::Art, Art<W>>,
     pub config:Config,
     pub camera:Camera,
-    textures:HashMap<u32, ImageGeneric<GlBackendSpec>>,
+    textures:HashMap<W::Texture, ImageGeneric<GlBackendSpec>>,
     ctx:ggez::Context,
     event_loop:EventsLoop
 }
@@ -47,11 +47,11 @@ impl<W:GameWorld> Engine<W> {
         engine
     }
 
-    pub fn load_texture<T:Into<u32>>(&mut self, bytes:&[u8], index:T) {
+    pub fn load_texture(&mut self, bytes:&[u8], texture:W::Texture) {
         let tex = image::load_from_memory(bytes).unwrap();
         let tex = tex.to_rgba();
         let mut tex = graphics::Image::from_rgba8(&mut self.ctx, tex.width() as u16, tex.height() as u16, &tex).unwrap();
-        self.textures.insert(index.into(), tex);
+        self.textures.insert(texture, tex);
         println!("load");
     }
 

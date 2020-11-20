@@ -1,10 +1,10 @@
 mod draw;
 mod update;
 use std::collections::HashMap;
-use ggez::{Context, ContextBuilder, event::{self, EventHandler, EventsLoop}, graphics::{self, FilterMode}};
+use ggez::{Context, ContextBuilder, event::{self, EventHandler, EventsLoop}, graphics::{self}};
 use ggez::graphics::{GlBackendSpec, ImageGeneric};
 
-use crate::{camera::Camera, collection::Collection, config::Config, math::Rect2, art::Art, system::System, world::GameWorld, world::World};
+use crate::{camera::Camera, collection::Collection, config::Config, art::Art, system::System, world::GameWorld, world::World};
 
 pub struct Engine<W:GameWorld> {
     pub world:World<W>,
@@ -24,7 +24,7 @@ pub struct Engine<W:GameWorld> {
 
 impl<W:GameWorld> Engine<W> {
     pub fn new() -> Self {
-        let (mut ctx, mut event_loop) = ContextBuilder::new("game_id", "author")
+        let (ctx, event_loop) = ContextBuilder::new("game_id", "author")
         .build().expect("could not create context");
 
         let mut engine = Self {
@@ -50,9 +50,8 @@ impl<W:GameWorld> Engine<W> {
     pub fn load_texture(&mut self, bytes:&[u8], texture:W::Texture) {
         let tex = image::load_from_memory(bytes).unwrap();
         let tex = tex.to_rgba();
-        let mut tex = graphics::Image::from_rgba8(&mut self.ctx, tex.width() as u16, tex.height() as u16, &tex).unwrap();
+        let tex = graphics::Image::from_rgba8(&mut self.ctx, tex.width() as u16, tex.height() as u16, &tex).unwrap();
         self.textures.insert(texture, tex);
-        println!("load");
     }
 
     pub fn run(mut engine:Self) {

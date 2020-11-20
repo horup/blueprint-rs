@@ -1,5 +1,3 @@
-use std::hash::Hash;
-
 use glam::*;
 
 use crate::{world::GameWorld};
@@ -34,13 +32,13 @@ pub struct Sprite<W:GameWorld> {
 }
 
 impl<W:GameWorld> Sprite<W> {
-    pub fn new(id:SpriteID, sprite_type:W::Art) -> Self {
+    pub fn new(id:SpriteID, art:W::Art) -> Self {
         Self {
             id:id,
             pos:Vec3::new(0.0, 0.0, 0.0),
             in_use:true,
             visible:false,
-            art:sprite_type,
+            art:art,
             scale:Vec2::new(1.0, 1.0),
             frame:1.0,
             animation_reverse:false,

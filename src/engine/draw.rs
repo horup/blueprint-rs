@@ -1,4 +1,4 @@
-use ggez::{self, mint::Point2, graphics::{self, Color, DrawParam, Rect}, timer};
+use ggez::{self, graphics::{self, Color, DrawParam, Rect}, mint::Point2, mint::Vector2, timer};
 use glam::Vec2;
 use crate::world::GameWorld;
 use super::Engine;
@@ -80,12 +80,18 @@ impl<W:GameWorld> Engine<W> {
                             src.y = frame.y as f32 / src.h;
                             src.w = frame.w as f32 / src.w;
                             src.h = frame.h as f32 / src.h;
+                            
+                            let mut scale:Vector2<f32> = Vec2::new(1.0 / img.width() as f32 * frame.w, 1.0 / img.height() as f32 * frame.h).into();
+                            scale.x *= sprite_type.width * sprite.scale.y;
+                            scale.y *= sprite_type.height * sprite.scale.x;
                             let dest:Point2<f32> = Vec2::new(sprite.pos.x, sprite.pos.y).into();
                             graphics::draw(ctx, img, DrawParam {
                                 dest,
                                 src,
+                                scale,
                                 ..DrawParam::default()
                             })?;
+
                         }
                     }
                 }

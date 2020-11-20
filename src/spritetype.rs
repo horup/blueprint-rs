@@ -12,10 +12,14 @@ impl Default for Animation {
         Animation::None
     }
 }
+
+// TODO: added origin
 #[derive(Clone, Default)]
 pub struct SpriteType {
     pub texture_id:u32,
-    pub frames:Vec<Rect2<u16>>,
+    pub frames:Vec<Rect2<f32>>,
     pub frames_per_second:f32,
-    pub animation:Animation
+    pub animation:Animation,
+    pub width:f32,
+    pub height:f32
 }

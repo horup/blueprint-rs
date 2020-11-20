@@ -1,4 +1,8 @@
+use std::hash::Hash;
+
 use glam::*;
+
+use crate::{collection::Key, engine::EngineSprites, world::GameWorld};
 
 #[derive(Debug, Copy, Clone)]
 pub struct SpriteID {
@@ -17,35 +21,35 @@ impl SpriteID {
 
 // TODO: Refactor 
 // TODO: Add rotation
-pub struct Sprite<S> {
+pub struct Sprite<W:GameWorld> {
     id:SpriteID,
     in_use:bool,
     pub pos:Vec3,
     pub scale:Vec2,
     pub visible:bool,
-    pub sprite_type_id:u32,
+    pub sprite_type_id:Key<EngineSprites, W::SpriteTypes>,
     pub frame:f32,
     pub animation_reverse:bool,
-    pub ext:S,
+    pub ext:W::Sprite,
 }
 
-impl<S:Default> Sprite<S> {
-    pub fn new(id:SpriteID) -> Self {
+impl<W:GameWorld> Sprite<W> {
+    pub fn new(id:SpriteID, sprite_type:Key<EngineSprites, W::SpriteTypes>) -> Self {
         Self {
             id:id,
             pos:Vec3::new(0.0, 0.0, 0.0),
             in_use:true,
             visible:false,
-            sprite_type_id:0,
+            sprite_type_id:sprite_type,
             scale:Vec2::new(1.0, 1.0),
             frame:1.0,
             animation_reverse:false,
-            ext:S::default()
+            ext:W::Sprite::default()
         }
     }
 }
 
-impl<S> Sprite<S> {
+impl<W:GameWorld> Sprite<W> {
     pub fn id(&self) -> &SpriteID {
         &self.id
     }

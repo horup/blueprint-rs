@@ -1,6 +1,6 @@
 use std::{hash::Hash, collections::HashMap};
 
-#[derive(Clone, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Eq, PartialEq, Hash)]
 pub enum Key<EngineKey:Clone + Eq + PartialEq, GameKey:Clone + Eq + PartialEq> {
     Engine(EngineKey),
     Game(GameKey)
@@ -30,22 +30,30 @@ impl<SubKey:Clone + Eq + PartialEq + Hash, CoreKey:Clone + Eq + PartialEq + Hash
     
 }*/
 
-impl<EngineKey:Clone + Eq + PartialEq + Hash, GameKey:Clone + Eq + PartialEq + Hash, V> Collection<EngineKey, GameKey, V> {
+impl<EngineKey:Copy + Clone + Eq + PartialEq + Hash, GameKey:Clone + Eq + PartialEq + Hash + Copy, V> Collection<EngineKey, GameKey, V> {
     pub fn new(hashmap:HashMap<Key<EngineKey, GameKey>, V>) -> Self {
         Self {
             hashmap
         }
     }
-    pub fn insert(&mut self, game_key:GameKey, value:V) {
-       // self.hashmap.insert(Key::Engine(), sprite_type);
+    pub fn insert_game(&mut self, game_key:GameKey, value:V) {
+        self.hashmap.insert(Key::Game(game_key), value);
     }
 
-    pub fn get(&self, gamekey:GameKey) -> Option<&V> {
-        self.hashmap.get(&Key::Game(gamekey))
+    pub fn get(&self, key:&Key<EngineKey, GameKey>) -> Option<&V> {
+        self.hashmap.get(key)
     }
 
-    pub fn get_mut(&self, gamekey:GameKey) -> Option<&V> {
-        self.hashmap.get(&Key::Game(gamekey))
+    pub fn get_game(&self, gamekey:&GameKey) -> Option<&V> {
+        self.hashmap.get(&Key::Game(*gamekey))
+    }
+
+    pub fn get_game_mut(&self, gamekey:&GameKey) -> Option<&V> {
+        self.hashmap.get(&Key::Game(*gamekey))
+    }
+
+    pub fn get_engine(&self, enginekey:&EngineKey) -> Option<&V> {
+        self.hashmap.get(&Key::Engine(*enginekey))
     }
 }
 

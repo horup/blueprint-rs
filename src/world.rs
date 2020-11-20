@@ -1,13 +1,17 @@
-use crate::sprite::{Sprite, SpriteID};
+use std::hash::Hash;
+
+use crate::{engine::EngineSprites, collection::Key, sprite::{Sprite, SpriteID}};
 
 pub trait GameWorld : Default {
     type Sprite : Default;
     type Event;
+    type SpriteTypes : Copy + Clone + Eq + PartialEq + Hash;
 }
+
 
 pub struct World<W:GameWorld>
 {
-    sprites:Vec<Sprite<W::Sprite>>,
+    sprites:Vec<Sprite<W>>,
     game:W
 }
 
@@ -21,7 +25,7 @@ impl<W:GameWorld> Default for World<W> {
 }
 
 impl<W:GameWorld> World<W> {
-    pub fn new_sprite(&mut self) -> &mut Sprite<W::Sprite> {
+    pub fn new_sprite(&mut self, sprite_type:Key<EngineSprites, W::SpriteTypes>) -> &mut Sprite<W> {
 
         let mut free:Option<SpriteID> = None;
         for sprite in &self.sprites {
@@ -39,12 +43,12 @@ impl<W:GameWorld> World<W> {
                 index:self.sprites.len() as u16
             });
 
-            self.sprites.push(Sprite::new(free.unwrap()));
+            self.sprites.push(Sprite::new(free.unwrap(), sprite_type));
         }
 
         let id = free.unwrap();
         let sprite = self.sprites.get_mut(id.index as usize).unwrap();
-        *sprite = Sprite::new(id);
+        *sprite = Sprite::new(id, sprite_type);
         sprite
     }
 
@@ -62,11 +66,11 @@ impl<W:GameWorld> World<W> {
         self.sprites.as_mut_slice()
     }*/
 
-    pub fn sprites_iter(&self) -> impl Iterator<Item = &Sprite<W::Sprite>> {
+    pub fn sprites_iter(&self) -> impl Iterator<Item = &Sprite<W>> {
         self.sprites.iter().filter(|x| x.in_use())
     }
 
-    pub fn sprites_iter_mut(&mut self) -> impl Iterator<Item = &mut Sprite<W::Sprite>> {
+    pub fn sprites_iter_mut(&mut self) -> impl Iterator<Item = &mut Sprite<W>> {
         self.sprites.iter_mut().filter(|x| x.in_use())
     }
 

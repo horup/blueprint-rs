@@ -4,6 +4,21 @@ struct SimpleWorld {
     pub timer:f32
 }
 
+impl GameWorld for SimpleWorld {
+    type Sprite = SimpleSprite;
+    type Event = SimpleEvent;
+    type Art = SimpleArt;
+    type Texture = SimpleTexture;
+}
+
+#[derive(Debug, Copy, Clone, Default)]
+struct SimpleSprite {
+}
+
+#[derive(Debug, Copy, Clone)]
+enum SimpleEvent {
+}
+
 #[derive(Copy, Clone, Hash, Eq, PartialEq)]
 enum SimpleArt {
     Player,
@@ -21,13 +36,6 @@ impl Default for SimpleWorld {
             timer:100.0
         }
     }
-}
-
-impl GameWorld for SimpleWorld {
-    type Sprite = ();
-    type Event = ();
-    type Art = SimpleArt;
-    type Texture = SimpleTexture;
 }
 
 fn tick(ctx:&mut Context<SimpleWorld>) 

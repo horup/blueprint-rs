@@ -9,7 +9,6 @@ use crate::{camera::Camera, collection::Collection, config::Config, math::Rect2,
 pub struct Engine<W:GameWorld> {
     pub world:World<W>,
     pub systems:Vec<System<W>>,
-    //pub sprite_types:HashMap<u32, SpriteType>,
     pub art:Collection<W::Art, Art>,
     pub config:Config,
     pub camera:Camera,
@@ -40,9 +39,6 @@ impl<W:GameWorld> Engine<W> {
         };
 
         graphics::set_default_filter(&mut engine.ctx, graphics::FilterMode::Nearest);
-        let tex = include_bytes!("../resources/engine_spritesheet.png");
-        engine.load_texture(tex, 0 as u32);
-
         let r = graphics::screen_coordinates(&engine.ctx);
         engine.config.width = r.w;
         engine.config.height = r.h;

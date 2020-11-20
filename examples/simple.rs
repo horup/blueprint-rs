@@ -1,4 +1,4 @@
-use blueprint::{context::Context, engine::Engine, math::Rect2, spritetype::SpriteType, world::GameWorld};
+use blueprint::{context::Context, engine::Engine, math::Rect2, art::Art, world::GameWorld};
 
 struct SimpleWorld {
     pub timer:f32
@@ -39,16 +39,16 @@ fn main() {
     let mut engine:Engine<SimpleWorld> = Engine::new();
     engine.camera.zoom = 32.0;
     engine.load_texture(include_bytes!("spritesheet.png"), 1 as u16);
-    engine.sprite_types.insert(SimpleSprites::Player, SpriteType {
-        animation : blueprint::spritetype::Animation::LoopBackForth,
+    engine.sprite_types.insert(SimpleSprites::Player, Art {
+        animation : blueprint::art::Animation::LoopBackForth,
         frames:[Rect2::new(0.0, 0.0, 16.0, 16.0), Rect2::new(0.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
         height:1.0,
         width:1.0,
         texture_id:1
     });
-    engine.sprite_types.insert(SimpleSprites::Zombie,SpriteType {
-        animation : blueprint::spritetype::Animation::LoopBackForth,
+    engine.sprite_types.insert(SimpleSprites::Zombie,Art {
+        animation : blueprint::art::Animation::LoopBackForth,
         frames:[Rect2::new(16.0, 0.0, 16.0, 16.0), Rect2::new(16.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
         height:1.0,

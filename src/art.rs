@@ -15,7 +15,7 @@ impl Default for Animation {
 
 // TODO: added origin
 #[derive(Clone, Default)]
-pub struct SpriteType {
+pub struct Art {
     pub texture_id:u32,
     pub frames:Vec<Rect2<f32>>,
     pub frames_per_second:f32,

@@ -5,7 +5,7 @@ pub mod event;
 pub mod context;
 pub mod system;
 pub mod config;
-pub mod spritetype;
+pub mod art;
 pub mod math;
 pub mod camera;
 pub mod collection;

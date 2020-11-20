@@ -39,15 +39,15 @@ impl<W:GameWorld> Engine<W> {
             if let Some(sprite_type) = self.sprite_types.get(&sprite.sprite_type_id) {
                 match sprite_type.animation 
                 {
-                    crate::spritetype::Animation::None => {}
-                    crate::spritetype::Animation::Loop => {
+                    crate::art::Animation::None => {}
+                    crate::art::Animation::Loop => {
                         sprite.frame += dt * sprite_type.frames_per_second;
                         println!("{}", sprite_type.frames_per_second);
                         if sprite.frame > sprite_type.frames.len() as f32 {
                             sprite.frame = 0.0;
                         }
                     }
-                    crate::spritetype::Animation::LoopBackForth => {
+                    crate::art::Animation::LoopBackForth => {
                         let dt = dt * sprite_type.frames_per_second;
                         if sprite.animation_reverse { sprite.frame -= dt} else { sprite.frame += dt};
                         if sprite.frame > sprite_type.frames.len() as f32 {
@@ -59,7 +59,7 @@ impl<W:GameWorld> Engine<W> {
                             sprite.animation_reverse = false;
                         }
                     }
-                    crate::spritetype::Animation::ForwardStop => {
+                    crate::art::Animation::ForwardStop => {
                         sprite.frame += dt * sprite_type.frames_per_second;
                         if sprite.frame > sprite_type.frames.len() as f32 {
                             sprite.frame = sprite_type.frames.len() as f32 - 1.0;

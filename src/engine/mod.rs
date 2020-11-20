@@ -4,13 +4,13 @@ use std::collections::HashMap;
 use ggez::{Context, ContextBuilder, event::{self, EventHandler, EventsLoop}, graphics::{self, FilterMode}};
 use ggez::graphics::{GlBackendSpec, ImageGeneric};
 
-use crate::{camera::Camera, collection::Collection, config::Config, math::Rect2, spritetype::SpriteType, system::System, world::GameWorld, world::World};
+use crate::{camera::Camera, collection::Collection, config::Config, math::Rect2, art::Art, system::System, world::GameWorld, world::World};
 
 pub struct Engine<W:GameWorld> {
     pub world:World<W>,
     pub systems:Vec<System<W>>,
     //pub sprite_types:HashMap<u32, SpriteType>,
-    pub sprite_types:Collection<W::SpriteTypes, SpriteType>,
+    pub sprite_types:Collection<W::SpriteTypes, Art>,
     pub config:Config,
     pub camera:Camera,
     textures:HashMap<u32, ImageGeneric<GlBackendSpec>>,

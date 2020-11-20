@@ -19,7 +19,7 @@ mod tests {
     impl GameWorld for () {
         type Sprite = ();
         type Event = ();
-        type SpriteTypes = ();
+        type Art = ();
     }
 
     #[test]

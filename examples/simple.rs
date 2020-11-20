@@ -5,7 +5,7 @@ struct SimpleWorld {
 }
 
 #[derive(Copy, Clone, Hash, Eq, PartialEq)]
-enum SimpleSprites {
+enum SimpleArt {
     Player,
     Zombie
 }
@@ -21,7 +21,7 @@ impl Default for SimpleWorld {
 impl GameWorld for SimpleWorld {
     type Sprite = ();
     type Event = ();
-    type SpriteTypes = SimpleSprites;
+    type Art = SimpleArt;
 }
 
 fn tick(ctx:&mut Context<SimpleWorld>) 
@@ -39,7 +39,7 @@ fn main() {
     let mut engine:Engine<SimpleWorld> = Engine::new();
     engine.camera.zoom = 32.0;
     engine.load_texture(include_bytes!("spritesheet.png"), 1 as u16);
-    engine.sprite_types.insert(SimpleSprites::Player, Art {
+    engine.art.insert(SimpleArt::Player, Art {
         animation : blueprint::art::Animation::LoopBackForth,
         frames:[Rect2::new(0.0, 0.0, 16.0, 16.0), Rect2::new(0.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
@@ -47,7 +47,7 @@ fn main() {
         width:1.0,
         texture_id:1
     });
-    engine.sprite_types.insert(SimpleSprites::Zombie,Art {
+    engine.art.insert(SimpleArt::Zombie,Art {
         animation : blueprint::art::Animation::LoopBackForth,
         frames:[Rect2::new(16.0, 0.0, 16.0, 16.0), Rect2::new(16.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
@@ -58,12 +58,12 @@ fn main() {
   
     engine.config.window_title = "Simple Example".into();
 
-    let mut s = engine.world.new_sprite(SimpleSprites::Player);
+    let mut s = engine.world.new_sprite(SimpleArt::Player);
     s.pos.x = 0.0;
     s.pos.y = 0.0;
 
     let mut spawn_zombie = |x,y| {
-        let mut s = engine.world.new_sprite(SimpleSprites::Zombie);
+        let mut s = engine.world.new_sprite(SimpleArt::Zombie);
         s.frame = x % 10.0;
         s.pos.x = x;
         s.pos.y = y;

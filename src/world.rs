@@ -5,7 +5,7 @@ use crate::{sprite::{Sprite, SpriteID}};
 pub trait GameWorld : Default {
     type Sprite : Default;
     type Event;
-    type SpriteTypes : Copy + Clone + Eq + PartialEq + Hash;
+    type Art : Copy + Clone + Eq + PartialEq + Hash;
 }
 
 
@@ -25,7 +25,7 @@ impl<W:GameWorld> Default for World<W> {
 }
 
 impl<W:GameWorld> World<W> {
-    pub fn new_sprite(&mut self, sprite_type:W::SpriteTypes) -> &mut Sprite<W> {
+    pub fn new_sprite(&mut self, sprite_type:W::Art) -> &mut Sprite<W> {
 
         let mut free:Option<SpriteID> = None;
         for sprite in &self.sprites {

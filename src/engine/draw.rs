@@ -36,7 +36,7 @@ impl<W:GameWorld> Engine<W> {
         }*/
         let dt = timer::average_delta(ctx).as_secs_f32();
         for sprite in self.world.sprites_iter_mut() {
-            if let Some(sprite_type) = self.sprite_types.get(&sprite.sprite_type_id) {
+            if let Some(sprite_type) = self.art.get(&sprite.sprite_type_id) {
                 match sprite_type.animation 
                 {
                     crate::art::Animation::None => {}
@@ -70,7 +70,7 @@ impl<W:GameWorld> Engine<W> {
         }
         
         for sprite in self.world.sprites_iter() {
-            if let Some(sprite_type) = self.sprite_types.get(&sprite.sprite_type_id) {
+            if let Some(sprite_type) = self.art.get(&sprite.sprite_type_id) {
                 if sprite_type.frames.len() > 0 {
                     if let Some(img) = self.textures.get(&sprite_type.texture_id) {
                         let frame = sprite.frame as usize % sprite_type.frames.len();

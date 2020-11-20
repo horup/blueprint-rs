@@ -10,7 +10,7 @@ pub struct Engine<W:GameWorld> {
     pub world:World<W>,
     pub systems:Vec<System<W>>,
     //pub sprite_types:HashMap<u32, SpriteType>,
-    pub sprite_types:Collection<W::SpriteTypes, Art>,
+    pub art:Collection<W::Art, Art>,
     pub config:Config,
     pub camera:Camera,
     textures:HashMap<u32, ImageGeneric<GlBackendSpec>>,
@@ -35,7 +35,7 @@ impl<W:GameWorld> Engine<W> {
             textures:HashMap::new(),
             ctx:ctx,
             event_loop:event_loop,
-            sprite_types:Collection::default(),
+            art:Collection::default(),
             camera:Camera::default()
         };
 

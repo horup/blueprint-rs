@@ -40,16 +40,15 @@ impl<W:GameWorld> Engine<W> {
         graphics::set_default_filter(&mut engine.ctx, graphics::FilterMode::Nearest);
         let tex = include_bytes!("../resources/engine_spritesheet.png");
         engine.load_texture(tex, 0 as u32);
-
-        let sprite_type = SpriteType {
+        
+        engine.sprite_types.insert(0,  SpriteType {
             texture_id:0,
             frames:Vec::from([Rect2::new(0.0, 0.0, 16.0, 16.0), Rect2::new(16.0, 0.0, 16.0, 16.0)]),
             animation:crate::spritetype::Animation::LoopBackForth,
             frames_per_second:1.0,
             width:16.0,
             height:16.0
-        };
-        engine.sprite_types.insert(0, sprite_type);
+        });
 
         let r = graphics::screen_coordinates(&engine.ctx);
         engine.config.width = r.w;

@@ -13,14 +13,14 @@ pub trait GameWorld : Default {
 pub struct World<W:GameWorld>
 {
     sprites:Vec<Sprite<W>>,
-    game:W
+    pub ext:W
 }
 
 impl<W:GameWorld> Default for World<W> {
     fn default() -> Self {
         Self {
             sprites:Vec::new(),
-            game:W::default()
+            ext:W::default()
         }
     }
 }
@@ -73,13 +73,5 @@ impl<W:GameWorld> World<W> {
 
     pub fn sprites_iter_mut(&mut self) -> impl Iterator<Item = &mut Sprite<W>> {
         self.sprites.iter_mut().filter(|x| x.in_use())
-    }
-
-    pub fn game(&self) -> &W {
-        &self.game
-    }
-
-    pub fn game_mut(&mut self) -> &mut W {
-        &mut self.game
     }
 }

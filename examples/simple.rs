@@ -1,4 +1,5 @@
 use blueprint::{context::Context, engine::Engine, math::Rect2, art::Art, world::GameWorld};
+use rand::random;
 
 struct SimpleWorld {
     pub timer:f32
@@ -33,17 +34,32 @@ enum SimpleTexture {
 impl Default for SimpleWorld {
     fn default() -> Self {
         Self {
-            timer:100.0
+            timer:0.0
         }
     }
 }
 
 fn tick(ctx:&mut Context<SimpleWorld>) 
 {
-    
     match ctx.event {
         blueprint::event::Event::Tick(delta) => {
-            ctx.world.game_mut().timer += delta;
+            let timer = &mut ctx.world.ext.timer;
+
+            *timer += delta;
+
+            if *timer > 0.2 {
+                
+                *timer = 0.0;
+                            
+                let mut s = ctx.world.new_sprite(SimpleArt::Zombie);
+                let dy = 8.0;
+                let dx = 16.0;
+                s.pos.x = random::<f32>() * dx - dx / 2.0;
+                s.frame = s.pos.x % 10.0;
+                s.pos.y = -dy;
+
+
+            }
         },
         _ => {}
     }
@@ -76,14 +92,6 @@ fn main() {
     s.pos.x = 0.0;
     s.pos.y = 0.0;
 
-    let mut spawn_zombie = |x,y| {
-        let mut s = engine.world.new_sprite(SimpleArt::Zombie);
-        s.frame = x % 10.0;
-        s.pos.x = x;
-        s.pos.y = y;
-    };
-
-    spawn_zombie(10.0, 0.0);
 
     engine.systems.push(tick);
     Engine::run(engine);

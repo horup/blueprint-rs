@@ -12,7 +12,7 @@ pub struct Engine<W:GameWorld> {
     pub art:Collection<W::Art, Art<W>>,
     pub config:Config,
     pub camera:Camera,
-    textures:HashMap<W::Texture, ImageGeneric<GlBackendSpec>>,
+    textures:Collection<W::Texture, ImageGeneric<GlBackendSpec>>,
     ctx:ggez::Context,
     event_loop:EventsLoop
 }
@@ -31,7 +31,7 @@ impl<W:GameWorld> Engine<W> {
             world:World::default(),
             systems:Vec::new(),
             config:Config::default(),
-            textures:HashMap::new(),
+            textures:Collection::default(),
             ctx:ctx,
             event_loop:event_loop,
             art:Collection::default(),

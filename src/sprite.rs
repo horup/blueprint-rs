@@ -17,7 +17,6 @@ impl SpriteID {
     }
 }
 
-// TODO: Refactor 
 // TODO: Add rotation
 pub struct Sprite<W:GameWorld> {
     id:SpriteID,

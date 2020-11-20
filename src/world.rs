@@ -25,7 +25,7 @@ impl<W:GameWorld> Default for World<W> {
 }
 
 impl<W:GameWorld> World<W> {
-    pub fn new_sprite(&mut self, sprite_type:W::Art) -> &mut Sprite<W> {
+    pub fn new_sprite(&mut self, art:W::Art) -> &mut Sprite<W> {
 
         let mut free:Option<SpriteID> = None;
         for sprite in &self.sprites {
@@ -43,12 +43,12 @@ impl<W:GameWorld> World<W> {
                 index:self.sprites.len() as u16
             });
 
-            self.sprites.push(Sprite::new(free.unwrap(), sprite_type));
+            self.sprites.push(Sprite::new(free.unwrap(), art));
         }
 
         let id = free.unwrap();
         let sprite = self.sprites.get_mut(id.index as usize).unwrap();
-        *sprite = Sprite::new(id, sprite_type);
+        *sprite = Sprite::new(id, art);
         sprite
     }
 

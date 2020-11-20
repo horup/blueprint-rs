@@ -4,18 +4,13 @@ use std::collections::HashMap;
 use ggez::{Context, ContextBuilder, event::{self, EventHandler, EventsLoop}, graphics::{self, FilterMode}};
 use ggez::graphics::{GlBackendSpec, ImageGeneric};
 
-use crate::{camera::Camera, collection::Collection, config::Config, collection::Key, math::Rect2, spritetype::SpriteType, system::System, world::GameWorld, world::World};
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub enum EngineSprites {
-    Unknown
-}
+use crate::{camera::Camera, collection::Collection, config::Config, math::Rect2, spritetype::SpriteType, system::System, world::GameWorld, world::World};
 
 pub struct Engine<W:GameWorld> {
     pub world:World<W>,
     pub systems:Vec<System<W>>,
     //pub sprite_types:HashMap<u32, SpriteType>,
-    pub sprite_types:Collection<EngineSprites, W::SpriteTypes, SpriteType>,
+    pub sprite_types:Collection<W::SpriteTypes, SpriteType>,
     pub config:Config,
     pub camera:Camera,
     textures:HashMap<u32, ImageGeneric<GlBackendSpec>>,
@@ -33,16 +28,6 @@ impl<W:GameWorld> Engine<W> {
         let (mut ctx, mut event_loop) = ContextBuilder::new("game_id", "author")
         .build().expect("could not create context");
 
-        let mut engine_sprites = HashMap::new();
-        engine_sprites.insert(Key::Engine(EngineSprites::Unknown),  SpriteType {
-            texture_id:0,
-            frames:Vec::from([Rect2::new(0.0, 0.0, 16.0, 16.0), Rect2::new(16.0, 0.0, 16.0, 16.0)]),
-            animation:crate::spritetype::Animation::LoopBackForth,
-            frames_per_second:1.0,
-            width:16.0,
-            height:16.0
-        });
-
         let mut engine = Self {
             world:World::default(),
             systems:Vec::new(),
@@ -50,7 +35,7 @@ impl<W:GameWorld> Engine<W> {
             textures:HashMap::new(),
             ctx:ctx,
             event_loop:event_loop,
-            sprite_types:Collection::new(engine_sprites),
+            sprite_types:Collection::default(),
             camera:Camera::default()
         };
 

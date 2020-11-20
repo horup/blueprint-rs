@@ -1,4 +1,4 @@
-use blueprint::{context::Context, engine::Engine, collection::Key, math::Rect2, spritetype::SpriteType, world::GameWorld};
+use blueprint::{context::Context, engine::Engine, math::Rect2, spritetype::SpriteType, world::GameWorld};
 
 struct SimpleWorld {
     pub timer:f32
@@ -39,7 +39,7 @@ fn main() {
     let mut engine:Engine<SimpleWorld> = Engine::new();
     engine.camera.zoom = 32.0;
     engine.load_texture(include_bytes!("spritesheet.png"), 1 as u16);
-    engine.sprite_types.insert_game(SimpleSprites::Player, SpriteType {
+    engine.sprite_types.insert(SimpleSprites::Player, SpriteType {
         animation : blueprint::spritetype::Animation::LoopBackForth,
         frames:[Rect2::new(0.0, 0.0, 16.0, 16.0), Rect2::new(0.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
@@ -47,7 +47,7 @@ fn main() {
         width:1.0,
         texture_id:1
     });
-    engine.sprite_types.insert_game(SimpleSprites::Zombie,SpriteType {
+    engine.sprite_types.insert(SimpleSprites::Zombie,SpriteType {
         animation : blueprint::spritetype::Animation::LoopBackForth,
         frames:[Rect2::new(16.0, 0.0, 16.0, 16.0), Rect2::new(16.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
@@ -58,12 +58,12 @@ fn main() {
   
     engine.config.window_title = "Simple Example".into();
 
-    let mut s = engine.world.new_sprite(Key::Game(SimpleSprites::Player));
+    let mut s = engine.world.new_sprite(SimpleSprites::Player);
     s.pos.x = 0.0;
     s.pos.y = 0.0;
 
     let mut spawn_zombie = |x,y| {
-        let mut s = engine.world.new_sprite(Key::Game(SimpleSprites::Zombie));
+        let mut s = engine.world.new_sprite(SimpleSprites::Zombie);
         s.frame = x % 10.0;
         s.pos.x = x;
         s.pos.y = y;

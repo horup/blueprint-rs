@@ -1,6 +1,6 @@
 use std::hash::Hash;
 
-use crate::{engine::EngineSprites, collection::Key, sprite::{Sprite, SpriteID}};
+use crate::{sprite::{Sprite, SpriteID}};
 
 pub trait GameWorld : Default {
     type Sprite : Default;
@@ -25,7 +25,7 @@ impl<W:GameWorld> Default for World<W> {
 }
 
 impl<W:GameWorld> World<W> {
-    pub fn new_sprite(&mut self, sprite_type:Key<EngineSprites, W::SpriteTypes>) -> &mut Sprite<W> {
+    pub fn new_sprite(&mut self, sprite_type:W::SpriteTypes) -> &mut Sprite<W> {
 
         let mut free:Option<SpriteID> = None;
         for sprite in &self.sprites {

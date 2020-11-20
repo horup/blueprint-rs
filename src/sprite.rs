@@ -2,7 +2,7 @@ use std::hash::Hash;
 
 use glam::*;
 
-use crate::{collection::Key, engine::EngineSprites, world::GameWorld};
+use crate::{world::GameWorld};
 
 #[derive(Debug, Copy, Clone)]
 pub struct SpriteID {
@@ -27,14 +27,14 @@ pub struct Sprite<W:GameWorld> {
     pub pos:Vec3,
     pub scale:Vec2,
     pub visible:bool,
-    pub sprite_type_id:Key<EngineSprites, W::SpriteTypes>,
+    pub sprite_type_id:W::SpriteTypes,
     pub frame:f32,
     pub animation_reverse:bool,
     pub ext:W::Sprite,
 }
 
 impl<W:GameWorld> Sprite<W> {
-    pub fn new(id:SpriteID, sprite_type:Key<EngineSprites, W::SpriteTypes>) -> Self {
+    pub fn new(id:SpriteID, sprite_type:W::SpriteTypes) -> Self {
         Self {
             id:id,
             pos:Vec3::new(0.0, 0.0, 0.0),

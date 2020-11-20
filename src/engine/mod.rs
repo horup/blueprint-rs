@@ -1,6 +1,5 @@
 mod draw;
 mod update;
-use std::collections::HashMap;
 use ggez::{Context, ContextBuilder, event::{self, EventHandler, EventsLoop}, graphics::{self}};
 use ggez::graphics::{GlBackendSpec, ImageGeneric};
 

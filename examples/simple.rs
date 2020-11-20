@@ -35,6 +35,7 @@ fn main() {
     engine.config.window_title = "Simple Example".into();
 
     let mut s = engine.world.new_sprite();
+    s.sprite_type_id = 1;
     s.pos.x = 10.0;
     s.pos.y = 20.0;
 

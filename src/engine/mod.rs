@@ -15,6 +15,11 @@ pub struct Engine<W:GameWorld> {
     ctx:*mut ggez::Context,
 }
 
+// TODO implement keyboard support
+// TODO implement mouse support
+// TODO implement cursor support
+// TODO implement player controlling support
+
 impl<W:GameWorld> Engine<W> {
     pub fn new() -> Self {
         Self {

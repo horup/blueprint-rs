@@ -2,7 +2,7 @@ use glam::*;
 
 use crate::{world::GameWorld};
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Eq)]
 pub struct SpriteID {
     pub index:u16,
     pub generation:u16

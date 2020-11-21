@@ -1,19 +1,8 @@
 use ggez::{timer};
 
-use crate::{context::Context, event::Event, world::GameWorld};
+use crate::{context::Context, event::Event, world::GameWorld, systems::movement};
 
 use super::Engine;
-
-fn movement<T:GameWorld>(ctx:&mut Context<T>)  {
-    match ctx.event {
-        Event::Tick(delta) => {
-            for sprite in ctx.world.sprites_iter_mut() {
-                sprite.pos += sprite.vel * *delta;
-            }
-        },
-        _ => {}
-    }
-}
 
 impl<W:GameWorld> Engine<W>  {
     pub(super) fn ggez_update(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
@@ -21,7 +10,7 @@ impl<W:GameWorld> Engine<W>  {
             let delta = 1.0 / self.config.tick_rate_ps as f32;  
             let event = Event::Tick(delta);
 
-            let engine_systems = [movement];
+            let engine_systems = [movement::movement];
             for system in engine_systems.iter() {
                 let mut context = Context {
                     event:&event,

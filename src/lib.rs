@@ -9,6 +9,7 @@ pub mod art;
 pub mod math;
 pub mod camera;
 pub mod collection;
+pub mod systems;
 
 #[cfg(test)]
 mod tests {

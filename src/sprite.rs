@@ -22,6 +22,7 @@ pub struct Sprite<W:GameWorld> {
     id:SpriteID,
     in_use:bool,
     pub pos:Vec3,
+    pub vel:Vec3,
     pub scale:Vec2,
     pub visible:bool,
     pub art:W::Art,
@@ -35,6 +36,7 @@ impl<W:GameWorld> Sprite<W> {
         Self {
             id:id,
             pos:Vec3::new(0.0, 0.0, 0.0),
+            vel:Vec3::new(0.0, 0.0, 0.0),
             in_use:true,
             visible:false,
             art:art,

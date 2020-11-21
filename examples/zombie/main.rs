@@ -57,6 +57,7 @@ fn tick(ctx:&mut Context<ZombieWorld>)
                 s.pos.x = random::<f32>() * dx - dx / 2.0;
                 s.frame = s.pos.x % 10.0;
                 s.pos.y = -dy;
+                s.vel.y = 1.0;
 
 
             }

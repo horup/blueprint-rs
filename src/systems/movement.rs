@@ -58,7 +58,7 @@ fn compute_movement<W:GameWorld>(ctx:&Context<W>, sprite:&Sprite<W>, diff:&Vec3)
 
 pub fn movement<T:GameWorld>(ctx:&mut Context<T>)  {
     match ctx.event {
-        Event::Tick(delta) => {
+        Event::Update(delta) => {
             let sprites:Vec<(SpriteID, Vec3)> = ctx.world.sprites_iter().map(|x| (*x.id(), x.vel)).collect();
             for (id, vel) in sprites {
                 let v = vel * *delta;

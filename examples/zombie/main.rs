@@ -42,15 +42,13 @@ impl Default for ZombieWorld {
 fn tick(ctx:&mut Context<ZombieWorld>) 
 {
     match ctx.event {
-        blueprint::event::Event::Tick(delta) => {
+        blueprint::event::Event::Update(delta) => {
             let timer = &mut ctx.world.ext.timer;
 
             *timer += delta;
 
             if *timer > 0.2 {
-                
                 *timer = 0.0;
-                            
                 let mut s = ctx.world.new_sprite(ZombieArt::Zombie);
                 let dy = 8.0;
                 let dx = 16.0;
@@ -58,8 +56,6 @@ fn tick(ctx:&mut Context<ZombieWorld>)
                 s.frame = s.pos.x % 10.0;
                 s.pos.y = -dy;
                 s.vel.y = 1.0;
-
-
             }
         },
         _ => {}

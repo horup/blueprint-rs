@@ -1,5 +1,6 @@
 
 pub enum Event<T> {
-    Tick(f32),
+    Update(f32),
+    Draw(f32),
     Game(T)
 }

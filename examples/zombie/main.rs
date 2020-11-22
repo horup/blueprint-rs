@@ -1,4 +1,4 @@
-use blueprint::{context::Context, engine::Engine, math::Rect2, art::Art, world::GameWorld};
+use blueprint::{art::Art, context::Context, engine::Engine, event::Event, math::Rect2, world::GameWorld};
 use rand::random;
 
 struct ZombieWorld {
@@ -39,7 +39,7 @@ impl Default for ZombieWorld {
     }
 }
 
-fn tick(ctx:&mut Context<ZombieWorld>) 
+fn update(ctx:&mut Context<ZombieWorld>) 
 {
     match ctx.event {
         blueprint::event::Event::Update(delta) => {
@@ -57,6 +57,23 @@ fn tick(ctx:&mut Context<ZombieWorld>)
                 s.pos.y = -dy;
                 s.vel.y = 1.0;
             }
+        },
+        _ => {}
+    }
+}
+
+fn draw(ctx:&mut Context<ZombieWorld>) {
+    match  ctx.event {
+        Event::Draw(delta) => {
+            if let Some(player) = ctx.world.find_sprite_mut(|x| {x.art == ZombieArt::Player}) {
+                let k = ctx.input.keyboard;
+                let mut x = if k.strife_left { -1.0 } else if k.strife_right { 1.0 } else { 0.0 };
+                let mut y = if k.move_forwad { -1.0 } else if k.move_backward { 1.0 } else { 0.0 };
+                let speed = 2.0;
+                player.vel.x = x * speed;
+                player.vel.y = y * speed;
+            }
+
         },
         _ => {}
     }
@@ -90,6 +107,7 @@ fn main() {
     s.pos.y = 0.0;
 
 
-    engine.systems.push(tick);
+    engine.systems.push(update);
+    engine.systems.push(draw);
     Engine::run(engine);
 }

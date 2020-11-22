@@ -75,7 +75,6 @@ impl<W:GameWorld> World<W> {
         }
 
         None
-
     }
 
     pub fn get_sprite_mut(&mut self, id:SpriteID) -> Option<&mut Sprite<W>> {
@@ -86,7 +85,10 @@ impl<W:GameWorld> World<W> {
         }
 
         None
+    }
 
+    pub fn find_sprite_mut(&mut self, predicate:impl FnMut(&&mut Sprite<W>)->bool) -> Option<&mut Sprite<W>> {
+        self.sprites.iter_mut().find(predicate)
     }
 
     pub fn sprites_iter(&self) -> impl Iterator<Item = &Sprite<W>> {

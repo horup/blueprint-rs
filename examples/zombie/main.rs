@@ -63,6 +63,7 @@ fn update(ctx:&mut Context<ZombieWorld>)
     }
 }
 
+// BUG: cap vel to speed
 // TODO: implement shooting
 // TODO: move movement code to engine, since this can be reused
 fn draw(ctx:&mut Context<ZombieWorld>) {

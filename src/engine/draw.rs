@@ -16,28 +16,7 @@ impl<W:GameWorld> Engine<W> {
     }
 
 
-
-    pub(super) fn ggez_draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
-        let alpha = timer::remaining_update_time(ctx).as_secs_f32() as f32 * self.config.tick_rate_ps as f32;
-        println!("{}", alpha);
-        graphics::set_window_title(ctx, &self.config.window_title);
-        // TODO: Implement interpolation
-        // BUG: Alpha sometimes returns a big number?
-        graphics::clear(ctx, Color::from_rgb(0, 0, 0) );
-
-        let config = &self.config;
-        let camera = &self.camera;
-        let mut r = Rect::new(camera.pos.x, camera.pos.x, config.width / camera.zoom, config.height / camera.zoom);
-        r.x -= r.w / 2.0;
-        r.y -= r.h / 2.0;
-        graphics::set_screen_coordinates(ctx, r)?;
-
-        /*let sprite_types = self.sprite_types.clone();
-        for sprite in self.world.sprites_iter_mut() {
-            sprite.frame += timer::average_delta(ctx).as_secs_f32();
-        }*/
-        let dt = timer::average_delta(ctx).as_secs_f32();
-
+    fn draw_sprites(&mut self, ctx:&mut ggez::Context, alpha:f32, dt:f32) -> ggez::GameResult {
         if let Some(prev_snapshot) = self.prev_snapshots.front() {
             for current_sprite in self.world.sprites_iter_mut() {
                 if let Some(sprite_type) = self.art.get(&current_sprite.art) {
@@ -106,6 +85,25 @@ impl<W:GameWorld> Engine<W> {
             }
         }
 
+        Ok(())
+    }
+
+    pub(super) fn ggez_draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
+        let alpha = timer::remaining_update_time(ctx).as_secs_f32() as f32 * self.config.tick_rate_ps as f32;
+        graphics::set_window_title(ctx, &self.config.window_title);
+        graphics::clear(ctx, Color::from_rgb(0, 0, 0) );
+
+        let config = &self.config;
+        let camera = &self.camera;
+        let mut r = Rect::new(camera.pos.x, camera.pos.x, config.width / camera.zoom, config.height / camera.zoom);
+        r.x -= r.w / 2.0;
+        r.y -= r.h / 2.0;
+        graphics::set_screen_coordinates(ctx, r)?;
+
+        let dt = timer::average_delta(ctx).as_secs_f32();
+
+      
+        self.draw_sprites(ctx, alpha, dt)?;
         self.draw_debug(ctx)?;
         graphics::present(ctx)?;
         Result::Ok(())

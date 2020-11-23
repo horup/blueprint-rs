@@ -1,5 +1,5 @@
 use collision::{Aabb2, Discrete};
-use glam::{Vec2, Vec3};
+use glam::{Vec3};
 
 use crate::{context::Context, event::Event, sprite::Sprite, world::GameWorld, sprite::SpriteID};
 
@@ -31,7 +31,7 @@ fn compute_movement<W:GameWorld>(ctx:&Context<W>, sprite:&Sprite<W>, diff:&Vec3)
         for v in vs.iter()
         {
             let mut collision = false;
-            let mut p:Vec3 = res + *v;
+            let p:Vec3 = res + *v;
             for other_sprite in ctx.world.sprites_iter().filter(|e| e.id() != sprite.id()) {
                 let v2 = res - other_sprite.pos;
                 let v2 = v2.normalize();

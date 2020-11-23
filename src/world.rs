@@ -13,6 +13,7 @@ pub trait GameWorld : Default + Clone {
 #[derive(Clone)]
 pub struct World<W:GameWorld>
 {
+    pub player_id:u128,
     pub timestamp:f32,
     pub ext:W,
     sprites:Vec<Sprite<W>>
@@ -21,6 +22,7 @@ pub struct World<W:GameWorld>
 impl<W:GameWorld> Default for World<W> {
     fn default() -> Self {
         Self {
+            player_id:0,
             timestamp:0.0,
             sprites:Vec::new(),
             ext:W::default()

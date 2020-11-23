@@ -70,11 +70,11 @@ fn update(ctx:&mut Context<ZombieWorld>)
 // TODO: implement health
 fn draw(ctx:&mut Context<ZombieWorld>) {
     match  ctx.event {
-        Event::Draw(delta) => {
+        Event::Draw(_delta) => {
             if let Some(player) = ctx.world.find_sprite_mut(|x| {x.art == ZombieArt::Player}) {
                 let k = ctx.input.keyboard;
-                let mut x = if k.strife_left { -1.0 } else if k.strife_right { 1.0 } else { 0.0 };
-                let mut y = if k.move_forwad { -1.0 } else if k.move_backward { 1.0 } else { 0.0 };
+                let x = if k.strife_left { -1.0 } else if k.strife_right { 1.0 } else { 0.0 };
+                let y = if k.move_forwad { -1.0 } else if k.move_backward { 1.0 } else { 0.0 };
                 let speed = 2.0;
                 player.vel.x = x * speed;
                 player.vel.y = y * speed;

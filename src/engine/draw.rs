@@ -60,7 +60,7 @@ impl<W:GameWorld> Engine<W> {
                     let frame = current_sprite.frame as usize % sprite_type.frames.len();
                     let frame = sprite_type.frames.get(frame)?;
 
-                    let mut pos = (current_sprite.pos - prev_sprite.pos) * alpha + prev_sprite.pos;
+                    let pos = (current_sprite.pos - prev_sprite.pos) * alpha + prev_sprite.pos;
 
                     let mut src = Rect::new(0.0, 0.0, img.width() as f32, img.height() as f32);
                     src.x = frame.x as f32 / src.w;

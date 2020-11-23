@@ -1,4 +1,4 @@
-use ggez::{event::KeyCode, input::{self, keyboard}, timer};
+use ggez::{event::KeyCode, input::{keyboard}, timer};
 
 use crate::{context::Context, context::Input, event::Event, context::Keyboard, systems::movement, world::GameWorld};
 use super::Engine;
@@ -42,7 +42,7 @@ impl<W:GameWorld> Engine<W>  {
         while timer::check_update_time(ctx, self.config.tick_rate_ps) {
             let prev_snapshot = self.world.clone();
             if self.prev_snapshots.len() > 20 {
-                let prev = self.prev_snapshots.pop_back().unwrap();
+                self.prev_snapshots.pop_back();
             }
 
             self.prev_snapshots.push_front(prev_snapshot);

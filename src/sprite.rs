@@ -30,6 +30,7 @@ pub struct Sprite<W:GameWorld> {
     pub frame:f32,
     pub animation_reverse:bool,
     pub ext:W::Sprite,
+    pub owner:u128
 }
 
 impl<W:GameWorld> Sprite<W> {
@@ -44,7 +45,8 @@ impl<W:GameWorld> Sprite<W> {
             scale:Vec2::new(1.0, 1.0),
             frame:1.0,
             animation_reverse:false,
-            ext:W::Sprite::default()
+            ext:W::Sprite::default(),
+            owner:0
         }
     }
 }

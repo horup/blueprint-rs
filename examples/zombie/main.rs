@@ -79,6 +79,8 @@ fn draw(ctx:&mut Context<ZombieWorld>) {
                 let speed = 2.0;
                 player.vel.x = x * speed;
                 player.vel.y = y * speed;
+
+                println!("{:?}", ctx.input.mouse);
             }
 
         },

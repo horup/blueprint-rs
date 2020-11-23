@@ -1,27 +1,41 @@
-use ggez::{event::KeyCode, input::{keyboard}, timer};
+use ggez::{event::KeyCode, input::{keyboard, mouse}, timer};
+use glam::Vec2;
 
-use crate::{context::Context, context::Input, event::Event, context::Keyboard, systems::movement, world::GameWorld};
+use crate::{context::Context, event::Event, input::{Input, Keyboard, Mouse}, systems::movement, world::GameWorld};
 use super::Engine;
 
-fn input(ctx:&ggez::Context) -> Input {
-    Input {
-        keyboard: Keyboard {
-            up:keyboard::is_key_pressed(ctx, KeyCode::W),
-            down:keyboard::is_key_pressed(ctx, KeyCode::S),
-            left:keyboard::is_key_pressed(ctx, KeyCode::A),
-            right:keyboard::is_key_pressed(ctx, KeyCode::D)
-        }
-    }
-}
 
 impl<W:GameWorld> Engine<W>  {
+
+    
+    fn get_input(&self, ctx:&ggez::Context) -> Input {
+        let mouse_pos = mouse::position(ctx);
+        let mut mouse_pos = Vec2::new((mouse_pos.x - self.config.width/2.0) / self.camera.zoom, (mouse_pos.y  - self.config.height/2.0) / self.camera.zoom);
+        mouse_pos.x -= self.camera.pos.x;
+        mouse_pos.y -= self.camera.pos.y;
+        
+        Input {
+            keyboard: Keyboard {
+                up:keyboard::is_key_pressed(ctx, KeyCode::W),
+                down:keyboard::is_key_pressed(ctx, KeyCode::S),
+                left:keyboard::is_key_pressed(ctx, KeyCode::A),
+                right:keyboard::is_key_pressed(ctx, KeyCode::D)
+            },
+            mouse: Mouse {
+                pos:mouse_pos,
+                primary:false
+            }
+        }
+    }
+
     fn push_event(&mut self, event:Event<W::Event>, ctx:&mut ggez::Context) {
+        let input = self.get_input(&ctx);
         let engine_systems = [movement::movement];
         for system in engine_systems.iter() {
             let mut context = Context {
                 event:&event,
                 world:&mut self.world,
-                input:input(&ctx)
+                input
             };
 
             system(&mut context);
@@ -31,7 +45,7 @@ impl<W:GameWorld> Engine<W>  {
             let mut context = Context {
                 event:&event,
                 world:&mut self.world,
-                input:input(&ctx)
+                input
             };
 
             system(&mut context);

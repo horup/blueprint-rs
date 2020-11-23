@@ -10,6 +10,7 @@ pub mod math;
 pub mod camera;
 pub mod collection;
 pub mod systems;
+pub mod input;
 
 #[cfg(test)]
 mod tests {

@@ -1,3 +1,5 @@
+use glam::Vec2;
+
 use crate::{world::GameWorld, math::Rect2};
 
 #[derive(Debug, Copy, Clone)]
@@ -22,4 +24,5 @@ pub struct Art<W:GameWorld> {
     pub animation:Animation,
     pub width:f32,
     pub height:f32,
+    pub origin:Vec2
 }

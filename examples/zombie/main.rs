@@ -1,4 +1,5 @@
 use blueprint::{art::Art, context::Context, engine::Engine, event::Event, math::Rect2, world::GameWorld};
+use glam::Vec2;
 use rand::random;
 
 #[derive(Clone)]
@@ -99,6 +100,7 @@ fn main() {
         height:1.0,
         width:1.0,
         texture_id:ZombieTexture::Spritesheet,
+        origin:Vec2::new(0.5, 0.5)
     });
     engine.art.insert(ZombieArt::Zombie,Art {
         animation : blueprint::art::Animation::LoopBackForth,
@@ -107,6 +109,7 @@ fn main() {
         height:1.0,
         width:1.0,
         texture_id:ZombieTexture::Spritesheet,
+        origin:Vec2::new(0.5, 0.5)
     });
   
     engine.config.window_title = "Zombie Example".into();

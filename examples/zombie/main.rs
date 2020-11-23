@@ -66,6 +66,8 @@ fn update(ctx:&mut Context<ZombieWorld>)
 // BUG: cap vel to speed
 // TODO: implement shooting
 // TODO: move movement code to engine, since this can be reused
+// TODO: implement zobie touch
+// TODO: implement health
 fn draw(ctx:&mut Context<ZombieWorld>) {
     match  ctx.event {
         Event::Draw(delta) => {
@@ -93,7 +95,7 @@ fn main() {
         frames_per_second:2.0,
         height:1.0,
         width:1.0,
-        texture_id:ZombieTexture::Spritesheet
+        texture_id:ZombieTexture::Spritesheet,
     });
     engine.art.insert(ZombieArt::Zombie,Art {
         animation : blueprint::art::Animation::LoopBackForth,
@@ -101,7 +103,7 @@ fn main() {
         frames_per_second:2.0,
         height:1.0,
         width:1.0,
-        texture_id:ZombieTexture::Spritesheet
+        texture_id:ZombieTexture::Spritesheet,
     });
   
     engine.config.window_title = "Zombie Example".into();

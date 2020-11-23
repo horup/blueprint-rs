@@ -21,5 +21,5 @@ pub struct Art<W:GameWorld> {
     pub frames_per_second:f32,
     pub animation:Animation,
     pub width:f32,
-    pub height:f32
+    pub height:f32,
 }

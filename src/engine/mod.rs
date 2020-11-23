@@ -1,5 +1,7 @@
 mod draw;
 mod update;
+use std::collections::VecDeque;
+
 use ggez::{Context, ContextBuilder, event::{self, EventHandler, EventsLoop}, graphics::{self}};
 use ggez::graphics::{GlBackendSpec, ImageGeneric};
 
@@ -7,6 +9,7 @@ use crate::{camera::Camera, collection::Collection, config::Config, art::Art, sy
 
 pub struct Engine<W:GameWorld> {
     pub world:World<W>,
+    pub prev_snapshots:VecDeque<World<W>>,
     pub systems:Vec<System<W>>,
     pub art:Collection<W::Art, Art<W>>,
     pub config:Config,
@@ -28,6 +31,7 @@ impl<W:GameWorld> Engine<W> {
 
         let mut engine = Self {
             world:World::default(),
+            prev_snapshots:VecDeque::new(),
             systems:Vec::new(),
             config:Config::default(),
             textures:Collection::default(),

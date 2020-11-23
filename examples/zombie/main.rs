@@ -1,6 +1,7 @@
 use blueprint::{art::Art, context::Context, engine::Engine, event::Event, math::Rect2, world::GameWorld};
 use rand::random;
 
+#[derive(Clone)]
 struct ZombieWorld {
     pub timer:f32
 }

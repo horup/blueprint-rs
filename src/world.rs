@@ -2,23 +2,26 @@ use std::hash::Hash;
 
 use crate::{sprite::{Sprite, SpriteID}};
 
-pub trait GameWorld : Default {
-    type Sprite : Default;
+pub trait GameWorld : Default + Clone {
+    type Sprite : Default + Copy + Clone;
     type Event;
     type Art : Copy + Clone + Eq + PartialEq + Hash;
     type Texture : Copy + Clone + Eq + PartialEq + Hash;
 }
 
 
+#[derive(Clone)]
 pub struct World<W:GameWorld>
 {
-    sprites:Vec<Sprite<W>>,
-    pub ext:W
+    pub timestamp:f32,
+    pub ext:W,
+    sprites:Vec<Sprite<W>>
 }
 
 impl<W:GameWorld> Default for World<W> {
     fn default() -> Self {
         Self {
+            timestamp:0.0,
             sprites:Vec::new(),
             ext:W::default()
         }

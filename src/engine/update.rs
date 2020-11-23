@@ -15,7 +15,6 @@ fn input(ctx:&ggez::Context) -> Input {
 }
 
 impl<W:GameWorld> Engine<W>  {
-
     fn push_event(&mut self, event:Event<W::Event>, ctx:&mut ggez::Context) {
         let engine_systems = [movement::movement];
         for system in engine_systems.iter() {
@@ -41,8 +40,15 @@ impl<W:GameWorld> Engine<W>  {
 
     pub(super) fn ggez_update(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
         while timer::check_update_time(ctx, self.config.tick_rate_ps) {
+            let prev_snapshot = self.world.clone();
+            if self.prev_snapshots.len() > 20 {
+                let prev = self.prev_snapshots.pop_back().unwrap();
+            }
+
+            self.prev_snapshots.push_front(prev_snapshot);
             let delta = 1.0 / self.config.tick_rate_ps as f32;  
             let event = Event::Update(delta);
+            self.world.timestamp += delta;
             self.push_event(event, ctx);
         }
 

@@ -18,6 +18,7 @@ impl SpriteID {
 }
 
 // TODO: Add rotation
+#[derive(Copy, Clone)]
 pub struct Sprite<W:GameWorld> {
     id:SpriteID,
     in_use:bool,

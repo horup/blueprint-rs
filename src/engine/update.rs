@@ -6,10 +6,10 @@ use super::Engine;
 fn input(ctx:&ggez::Context) -> Input {
     Input {
         keyboard: Keyboard {
-            move_forwad:keyboard::is_key_pressed(ctx, KeyCode::W),
-            move_backward:keyboard::is_key_pressed(ctx, KeyCode::S),
-            strife_left:keyboard::is_key_pressed(ctx, KeyCode::A),
-            strife_right:keyboard::is_key_pressed(ctx, KeyCode::D)
+            up:keyboard::is_key_pressed(ctx, KeyCode::W),
+            down:keyboard::is_key_pressed(ctx, KeyCode::S),
+            left:keyboard::is_key_pressed(ctx, KeyCode::A),
+            right:keyboard::is_key_pressed(ctx, KeyCode::D)
         }
     }
 }

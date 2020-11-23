@@ -64,17 +64,17 @@ fn update(ctx:&mut Context<ZombieWorld>)
 }
 
 // BUG: cap vel to speed
-// TODO: implement shooting
+// TODO: 1) implement shooting
 // TODO: move movement code to engine, since this can be reused
-// TODO: implement zobie touch
+// TODO: implement zombie touch
 // TODO: implement health
 fn draw(ctx:&mut Context<ZombieWorld>) {
     match  ctx.event {
         Event::Draw(_delta) => {
             if let Some(player) = ctx.world.find_sprite_mut(|x| {x.art == ZombieArt::Player}) {
                 let k = ctx.input.keyboard;
-                let x = if k.strife_left { -1.0 } else if k.strife_right { 1.0 } else { 0.0 };
-                let y = if k.move_forwad { -1.0 } else if k.move_backward { 1.0 } else { 0.0 };
+                let x = if k.left { -1.0 } else if k.right { 1.0 } else { 0.0 };
+                let y = if k.up { -1.0 } else if k.down { 1.0 } else { 0.0 };
                 let speed = 2.0;
                 player.vel.x = x * speed;
                 player.vel.y = y * speed;

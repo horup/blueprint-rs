@@ -5,10 +5,10 @@ use crate::{event::Event, world::{GameWorld, World}};
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Keyboard {
-    pub strife_left:bool,
-    pub strife_right:bool,
-    pub move_forwad:bool,
-    pub move_backward:bool
+    pub left:bool,
+    pub right:bool,
+    pub up:bool,
+    pub down:bool
 }
 
 // TODO: implement generics support

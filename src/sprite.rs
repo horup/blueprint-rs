@@ -18,6 +18,7 @@ impl SpriteID {
 }
 
 // TODO: Add rotation
+// TODO: added clipping type to control collision
 #[derive(Copy, Clone, PartialOrd, PartialEq)]
 pub struct Sprite<W:GameWorld> {
     id:SpriteID,

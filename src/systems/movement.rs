@@ -62,8 +62,8 @@ pub fn movement<T:GameWorld>(ctx:&mut Context<T>)  {
             let sprites:Vec<(SpriteID, Vec3)> = ctx.world.sprites_iter().map(|x| (*x.id(), x.vel)).collect();
             for (id, vel) in sprites {
                 let v = vel * *delta;
-                let res = compute_movement(ctx, ctx.world.get_sprite(id).unwrap(), &v);
-                ctx.world.get_sprite_mut(id).unwrap().pos = res;
+                let res = compute_movement(ctx, ctx.world.get_sprite(&id).unwrap(), &v);
+                ctx.world.get_sprite_mut(&id).unwrap().pos = res;
             }
         },
         _ => {}

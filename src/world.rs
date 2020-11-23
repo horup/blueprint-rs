@@ -70,7 +70,7 @@ impl<W:GameWorld> World<W> {
         self.sprites.as_mut_slice()
     }*/
 
-    pub fn get_sprite(&self, id:SpriteID) -> Option<&Sprite<W>> {
+    pub fn get_sprite(&self, id:&SpriteID) -> Option<&Sprite<W>> {
         if let Some(sprite) = self.sprites.get(id.index as usize) {
             if sprite.in_use() {
                 return Some(sprite);
@@ -80,7 +80,7 @@ impl<W:GameWorld> World<W> {
         None
     }
 
-    pub fn get_sprite_mut(&mut self, id:SpriteID) -> Option<&mut Sprite<W>> {
+    pub fn get_sprite_mut(&mut self, id:&SpriteID) -> Option<&mut Sprite<W>> {
         if let Some(sprite) = self.sprites.get_mut(id.index as usize) {
             if sprite.in_use() {
                 return Some(sprite);

@@ -13,7 +13,7 @@ fn aabb2(pos:&Vec3) -> Aabb2<f32> {
     )
 }
 
-// TODO: 2) implement collision event
+// TODO: 1) implement collision event
 // BUG: fix issue with scaling and sprite_type width/height
 fn compute_movement<W:GameWorld>(ctx:&Context<W>, sprite:&Sprite<W>, diff:&Vec3) -> Vec3
 {

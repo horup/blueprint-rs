@@ -73,7 +73,6 @@ fn update(ctx:&mut Context<ZombieWorld>)
     }
 }
 
-// BUG: cap vel to speed
 // TODO: move movement code to engine, since this can be reused
 // TODO: implement zombie touch
 // TODO: implement health
@@ -86,8 +85,8 @@ fn draw(ctx:&mut Context<ZombieWorld>) {
                 let x = if k.left { -1.0 } else if k.right { 1.0 } else { 0.0 };
                 let y = if k.up { -1.0 } else if k.down { 1.0 } else { 0.0 };
                 let speed = 2.0;
-                player.vel.x = x * speed;
-                player.vel.y = y * speed;
+                let v = Vec3::new(x, y, 0.0).normalize() * speed;
+                player.vel = v;
                 if player.ext.cooldown <= 0.0 && ctx.input.mouse.primary {
                     let pos = player.pos;
                     let target = ctx.input.mouse.pos;

@@ -15,7 +15,7 @@ impl<W:GameWorld> Engine<W> {
         Result::Ok(())
     }
 
-
+    // TODO: implement default Art for when Art cannot be found
     fn draw_sprites(&mut self, ctx:&mut ggez::Context, alpha:f32, dt:f32) -> ggez::GameResult {
         if let Some(prev_snapshot) = self.prev_snapshots.front() {
             for current_sprite in self.world.sprites_iter_mut() {

@@ -1,4 +1,4 @@
-use glam::Vec2;
+use glam::Vec3;
 
 
 #[derive(Debug, Copy, Clone, Default)]
@@ -11,7 +11,7 @@ pub struct Keyboard {
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Mouse {
-    pub pos:Vec2,
+    pub pos:Vec3,
     pub primary:bool
 }
 

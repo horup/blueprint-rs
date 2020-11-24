@@ -1,5 +1,5 @@
 use blueprint::{art::Art, context::Context, engine::Engine, event::Event, math::Rect2, world::GameWorld};
-use glam::Vec2;
+use glam::{Vec2, Vec3};
 use rand::random;
 
 #[derive(Clone)]
@@ -26,7 +26,8 @@ enum ZombieEvent {
 #[derive(Copy, Clone, Hash, Eq, PartialEq)]
 enum ZombieArt {
     Player,
-    Zombie
+    Zombie,
+    Ball
 }
 
 #[derive(Copy, Clone, Hash, Eq, PartialEq)]
@@ -73,7 +74,6 @@ fn update(ctx:&mut Context<ZombieWorld>)
 }
 
 // BUG: cap vel to speed
-// TODO: 1) implement shooting
 // TODO: move movement code to engine, since this can be reused
 // TODO: implement zombie touch
 // TODO: implement health
@@ -89,11 +89,17 @@ fn draw(ctx:&mut Context<ZombieWorld>) {
                 player.vel.x = x * speed;
                 player.vel.y = y * speed;
                 if player.ext.cooldown <= 0.0 && ctx.input.mouse.primary {
+                    let pos = player.pos;
+                    let target = ctx.input.mouse.pos;
+                    let v = target - pos;
+                    let v = v.normalize() * 2.0;
                     player.ext.cooldown = 0.5;
-                    println!("shooting");
+                    
+                    let ball = ctx.world.new_sprite(ZombieArt::Ball);
+                    ball.pos = pos;
+                    ball.vel = v;
                 }
             }
-
         },
         _ => {}
     }
@@ -121,6 +127,7 @@ fn main() {
         texture_id:ZombieTexture::Spritesheet,
         origin:Vec2::new(0.5, 0.5)
     });
+    engine.art.insert(ZombieArt::Ball, Art::new_1x1(ZombieTexture::Spritesheet, Rect2::new(32.0, 0.0, 16.0, 16.0)));
   
     engine.config.window_title = "Zombie Example".into();
 

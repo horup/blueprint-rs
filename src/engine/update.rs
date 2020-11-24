@@ -1,5 +1,5 @@
 use ggez::{event::KeyCode, input::{keyboard, mouse}, timer};
-use glam::Vec2;
+use glam::{Vec3};
 
 use crate::{context::Context, event::Event, input::{Input, Keyboard, Mouse}, systems::movement, world::GameWorld};
 use super::Engine;
@@ -10,7 +10,7 @@ impl<W:GameWorld> Engine<W>  {
     
     fn get_input(&self, ctx:&ggez::Context) -> Input {
         let mouse_pos = mouse::position(ctx);
-        let mut mouse_pos = Vec2::new((mouse_pos.x - self.config.width/2.0) / self.camera.zoom, (mouse_pos.y  - self.config.height/2.0) / self.camera.zoom);
+        let mut mouse_pos = Vec3::new((mouse_pos.x - self.config.width/2.0) / self.camera.zoom, (mouse_pos.y  - self.config.height/2.0) / self.camera.zoom, 0.0);
         mouse_pos.x -= self.camera.pos.x;
         mouse_pos.y -= self.camera.pos.y;
         

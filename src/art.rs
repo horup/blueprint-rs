@@ -26,3 +26,17 @@ pub struct Art<W:GameWorld> {
     pub height:f32,
     pub origin:Vec2
 }
+
+impl<W:GameWorld> Art<W> {
+    pub fn new_1x1(texture:W::Texture, frame:Rect2<f32>) -> Art<W> {
+        Self {
+            texture_id:texture,
+            frames:[frame].into(),
+            animation:Animation::None,
+            frames_per_second:0.0,
+            width:1.0,
+            height:1.0,
+            origin:Vec2::new(0.5, 0.5)
+        }
+    }
+}

@@ -92,12 +92,13 @@ fn draw(ctx:&mut Context<ZombieWorld>) {
                     let pos = player.pos;
                     let target = ctx.input.mouse.pos;
                     let v = target - pos;
-                    let v = v.normalize() * 2.0;
+                    let v = v.normalize();
+
                     player.ext.cooldown = 0.5;
                     
                     let ball = ctx.world.new_sprite(ZombieArt::Ball);
-                    ball.pos = pos;
-                    ball.vel = v;
+                    ball.pos = pos + v * 1.1;
+                    ball.vel = v * 4.0;
                 }
             }
         },

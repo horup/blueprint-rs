@@ -16,6 +16,7 @@ impl GameWorld for ZombieWorld {
 
 #[derive(Debug, Copy, Clone, Default)]
 struct ZombieSprite {
+    cooldown:f32
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -59,6 +60,13 @@ fn update(ctx:&mut Context<ZombieWorld>)
                 s.pos.y = -dy;
                 s.vel.y = 1.0;
             }
+
+            for s in ctx.world.sprites_iter_mut() {
+                s.ext.cooldown -= delta;
+                if s.ext.cooldown < 0.0 {
+                    s.ext.cooldown = 0.0;
+                }
+            }
         },
         _ => {}
     }
@@ -80,8 +88,10 @@ fn draw(ctx:&mut Context<ZombieWorld>) {
                 let speed = 2.0;
                 player.vel.x = x * speed;
                 player.vel.y = y * speed;
-
-                println!("{:?}", ctx.input.mouse);
+                if player.ext.cooldown <= 0.0 && ctx.input.mouse.primary {
+                    player.ext.cooldown = 0.5;
+                    println!("shooting");
+                }
             }
 
         },

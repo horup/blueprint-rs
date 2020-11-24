@@ -23,7 +23,7 @@ impl<W:GameWorld> Engine<W>  {
             },
             mouse: Mouse {
                 pos:mouse_pos,
-                primary:false
+                primary:mouse::button_pressed(ctx, ggez::event::MouseButton::Left)
             }
         }
     }

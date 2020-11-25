@@ -19,8 +19,6 @@ pub struct Engine<W:GameWorld> {
     event_loop:EventsLoop
 }
 
-// TODO implement keyboard support
-// TODO implement mouse support
 // TODO implement cursor support
 // TODO implement player controlling support
 

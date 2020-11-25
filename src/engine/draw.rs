@@ -3,6 +3,7 @@ use glam::Vec2;
 use crate::world::GameWorld;
 use super::Engine;
 
+// TODO: add sprite rectangle when in debug mode
 impl<W:GameWorld> Engine<W> {
     fn draw_debug(&mut self, ctx:&mut ggez::Context) -> ggez::GameResult {
         graphics::set_screen_coordinates(ctx, Rect::new(0.0, 0.0, self.config.width, self.config.height))?;

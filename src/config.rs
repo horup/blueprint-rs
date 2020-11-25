@@ -1,3 +1,5 @@
+
+// TODO: add debug mode
 pub struct Config {
     pub tick_rate_ps:u32,
     pub window_title:String,

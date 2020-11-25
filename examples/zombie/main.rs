@@ -159,6 +159,8 @@ fn main() {
         texture_id:ZombieTexture::Spritesheet,
         origin:Vec2::new(0.5, 0.5)
     });
+
+    // TODO: refactor into a function similar to new_1x1
     engine.art.insert(ZombieArt::BloodSplatter,Art {
         animation : blueprint::art::Animation::Loop,
         frames:[Rect2::new(0.0, 32.0, 32.0, 32.0), Rect2::new(32.0, 32.0, 32.0, 32.0), Rect2::new(64.0, 32.0, 32.0, 32.0)].into(),

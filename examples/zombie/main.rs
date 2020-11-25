@@ -74,9 +74,11 @@ fn update(ctx:&mut Context<ZombieWorld>)
 }
 
 // TODO: move movement code to engine, since this can be reused
-// TODO: implement zombie touch
-// TODO: implement health
+// TODO: 2) implement zombie touch
+// TODO: 1) implement health
 // TODO: implement AI
+// TODO: implement restart of game
+// TODO: implement score or similar
 fn draw(ctx:&mut Context<ZombieWorld>) {
     match  ctx.event {
         Event::Draw(_delta) => {

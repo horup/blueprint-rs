@@ -39,7 +39,6 @@ impl<W:GameWorld> World<W> {
                 let mut id = *sprite.id();
                 id.generation += 1;
                 free = Some(id);
-
             }
         }
 
@@ -50,6 +49,7 @@ impl<W:GameWorld> World<W> {
             });
 
             self.sprites.push(Sprite::new(free.unwrap(), art));
+            
         }
 
         let id = free.unwrap();
@@ -64,17 +64,9 @@ impl<W:GameWorld> World<W> {
         }
     }
 
-    /*pub fn sprites(&self) -> &[Sprite<S>] {
-        self.sprites.as_slice()
-    }
-
-    pub fn sprites_mut(&mut self) -> &mut [Sprite<S>] {
-        self.sprites.as_mut_slice()
-    }*/
-
     pub fn get_sprite(&self, id:&SpriteID) -> Option<&Sprite<W>> {
         if let Some(sprite) = self.sprites.get(id.index as usize) {
-            if sprite.in_use() {
+            if sprite.in_use() && sprite.id() == id {
                 return Some(sprite);
             }
         }
@@ -84,7 +76,7 @@ impl<W:GameWorld> World<W> {
 
     pub fn get_sprite_mut(&mut self, id:&SpriteID) -> Option<&mut Sprite<W>> {
         if let Some(sprite) = self.sprites.get_mut(id.index as usize) {
-            if sprite.in_use() {
+            if sprite.in_use() && sprite.id() == id {
                 return Some(sprite);
             }
         }

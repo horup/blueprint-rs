@@ -58,7 +58,7 @@ impl<W:GameWorld> World<W> {
         sprite
     }
 
-    pub fn delete_sprite(&mut self, id: SpriteID) {
+    pub fn delete_sprite(&mut self, id: &SpriteID) {
         if let Some(sprite) = self.sprites.get_mut(id.index as usize) {
             sprite.delete();
         }

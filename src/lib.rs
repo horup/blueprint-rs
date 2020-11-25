@@ -35,7 +35,7 @@ mod tests {
         assert_eq!(world.sprites_iter().count(), 1);
         assert_eq!(&world.sprites_iter().last().unwrap().pos, &Vec3::new(0.0, 1.0, 0.0));
      
-        world.delete_sprite(id);
+        world.delete_sprite(&id);
         assert_eq!(world.sprites_iter().count(), 0);
     }
 }

@@ -105,6 +105,20 @@ fn draw(ctx:&mut Context<ZombieWorld>) {
     }
 }
 
+fn on_collision(ctx:&mut Context<ZombieWorld>) {
+    if let Event::CollisionBetweenSprites(id1, id2) = ctx.event {
+        let sprite1 = ctx.world.get_sprite(id1);
+        let sprite2 = ctx.world.get_sprite(id2);
+        if let (Some(sprite1), Some(sprite2)) = (sprite1, sprite2) {
+            if sprite1.art == ZombieArt::Ball {
+                // TODO: spawn an effect to show splash
+                ctx.world.delete_sprite(id1);
+                ctx.world.delete_sprite(id2);
+            }
+        }
+    }
+}
+
 fn main() {
     let mut engine:Engine<ZombieWorld> = Engine::new();
     engine.camera.zoom = 32.0;
@@ -138,5 +152,6 @@ fn main() {
 
     engine.systems.push(update);
     engine.systems.push(draw);
+    engine.systems.push(on_collision);
     Engine::run(engine);
 }

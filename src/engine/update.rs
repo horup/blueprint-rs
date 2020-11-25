@@ -31,11 +31,16 @@ impl<W:GameWorld> Engine<W>  {
     fn push_event(&mut self, event:Event<W::Event>, ctx:&mut ggez::Context) {
         let input = self.get_input(&ctx);
         let engine_systems = [movement::movement];
+        let mut new_events = Vec::new();
+        let mut push_event = |e| {
+            new_events.push(e);
+        };
         for system in engine_systems.iter() {
             let mut context = Context {
                 event:&event,
                 world:&mut self.world,
-                input
+                input,
+                push_event:&mut push_event
             };
 
             system(&mut context);
@@ -45,10 +50,15 @@ impl<W:GameWorld> Engine<W>  {
             let mut context = Context {
                 event:&event,
                 world:&mut self.world,
-                input
+                input,
+                push_event:&mut push_event
             };
 
             system(&mut context);
+        }
+
+        for e in new_events {
+            self.push_event(e, ctx);
         }
     }
 

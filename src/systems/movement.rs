@@ -1,7 +1,7 @@
 use collision::{Aabb2, Discrete};
 use glam::{Vec3};
 
-use crate::{context::Context, event::Event, sprite::Sprite, world::GameWorld, sprite::SpriteID};
+use crate::{context::Context, event::Event, sprite::Sprite, sprite::SpriteID, world::{GameWorld, World}};
 
 
 
@@ -15,7 +15,7 @@ fn aabb2(pos:&Vec3) -> Aabb2<f32> {
 
 // TODO: 1) implement collision event
 // BUG: fix issue with scaling and sprite_type width/height
-fn compute_movement<W:GameWorld>(ctx:&Context<W>, sprite:&Sprite<W>, diff:&Vec3) -> Vec3
+fn compute_movement<W:GameWorld>(world:&World<W>, sprite:&Sprite<W>, diff:&Vec3, push_event:&mut dyn FnMut(Event<W::Event>)) -> Vec3
 {
     let mut res = sprite.pos;
     let max = 0.1;
@@ -33,14 +33,14 @@ fn compute_movement<W:GameWorld>(ctx:&Context<W>, sprite:&Sprite<W>, diff:&Vec3)
         {
             let mut collision = false;
             let p:Vec3 = res + *v;
-            for other_sprite in ctx.world.sprites_iter().filter(|e| e.id() != sprite.id()) {
+            for other_sprite in world.sprites_iter().filter(|e| e.id() != sprite.id()) {
                 let v2 = res - other_sprite.pos;
                 let v2 = v2.normalize();
                 if v.dot(v2) < 0.0 {
                     
                     if aabb2(&p).intersects(&aabb2(&other_sprite.pos)) {
                         collision = true;
-                        //push_event(Event::Collision(entity.id, other_entity.id));
+                        push_event(Event::CollisionBetweenSprites(*sprite.id(), *other_sprite.id()));
                         break;
                     } 
                 }
@@ -64,7 +64,7 @@ pub fn movement<T:GameWorld>(ctx:&mut Context<T>)  {
             let sprites:Vec<(SpriteID, Vec3)> = ctx.world.sprites_iter().map(|x| (*x.id(), x.vel)).collect();
             for (id, vel) in sprites {
                 let v = vel * *delta;
-                let res = compute_movement(ctx, ctx.world.get_sprite(&id).unwrap(), &v);
+                let res = compute_movement(&ctx.world, ctx.world.get_sprite(&id).unwrap(), &v, &mut ctx.push_event);
                 ctx.world.get_sprite_mut(&id).unwrap().pos = res;
             }
         },

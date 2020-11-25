@@ -1,6 +1,9 @@
+use crate::sprite::SpriteID;
+
 
 pub enum Event<T> {
     Update(f32),
     Draw(f32),
-    Game(T)
+    CollisionBetweenSprites(SpriteID, SpriteID),
+    Ext(T)
 }

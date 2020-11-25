@@ -25,7 +25,6 @@ impl<W:GameWorld> Engine<W> {
                         crate::art::Animation::None => {}
                         crate::art::Animation::Loop => {
                             current_sprite.frame += dt * sprite_type.frames_per_second;
-                            println!("{}", sprite_type.frames_per_second);
                             if current_sprite.frame > sprite_type.frames.len() as f32 {
                                 current_sprite.frame = 0.0;
                             }

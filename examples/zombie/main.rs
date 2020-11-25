@@ -178,6 +178,7 @@ fn main() {
     s.pos.y = 0.0;
 
     let mut test = engine.world.new_sprite(ZombieArt::BloodSplatter);
+    test.clip = blueprint::sprite::Clip::None;
 
 
     engine.systems.push(update);

@@ -1,7 +1,7 @@
 use collision::{Aabb2, Discrete};
 use glam::{Vec3};
 
-use crate::{context::Context, event::Event, sprite::Sprite, sprite::SpriteID, world::{GameWorld, World}};
+use crate::{context::Context, event::Event, sprite::Sprite, sprite::{Clip, SpriteID}, world::{GameWorld, World}};
 
 
 
@@ -13,7 +13,7 @@ fn aabb2(pos:&Vec3) -> Aabb2<f32> {
     )
 }
 
-// TODO: 1) implement collision event
+// TODO: refactor using interiour mutability 
 // BUG: fix issue with scaling and sprite_type width/height
 fn compute_movement<W:GameWorld>(world:&World<W>, sprite:&Sprite<W>, diff:&Vec3, push_event:&mut dyn FnMut(Event<W::Event>)) -> Vec3
 {
@@ -31,22 +31,24 @@ fn compute_movement<W:GameWorld>(world:&World<W>, sprite:&Sprite<W>, diff:&Vec3,
         let vs = [Vec3::new(0.0, dir.y * step, 0.0), Vec3::new(dir.x * step, 0.0, 0.0)];
         for v in vs.iter()
         {
-            let mut collision = false;
-            let p:Vec3 = res + *v;
-            for other_sprite in world.sprites_iter().filter(|e| e.id() != sprite.id()) {
-                let v2 = res - other_sprite.pos;
-                let v2 = v2.normalize();
-                if v.dot(v2) < 0.0 {
-                    
-                    if aabb2(&p).intersects(&aabb2(&other_sprite.pos)) {
-                        collision = true;
-                        push_event(Event::CollisionBetweenSprites(*sprite.id(), *other_sprite.id()));
-                        break;
-                    } 
+            if sprite.clip == Clip::Default {
+                let mut collision = false;
+                let p:Vec3 = res + *v;
+                for other_sprite in world.sprites_iter().filter(|e| e.id() != sprite.id() && e.clip != Clip::None) {
+                    let v2 = res - other_sprite.pos;
+                    let v2 = v2.normalize();
+                    if v.dot(v2) < 0.0 {
+                        
+                        if aabb2(&p).intersects(&aabb2(&other_sprite.pos)) {
+                            collision = true;
+                            push_event(Event::CollisionBetweenSprites(*sprite.id(), *other_sprite.id()));
+                            break;
+                        } 
+                    }
                 }
-            }
-            if !collision {
-                res = p;
+                if !collision {
+                    res = p;
+                }
             }
         }
 

@@ -8,6 +8,18 @@ pub struct SpriteID {
     pub generation:u16
 }
 
+#[derive(Debug, Copy, Clone, PartialOrd, PartialEq)]
+pub enum Clip {
+    Default,
+    None
+}
+
+impl Default for Clip {
+    fn default() -> Self {
+        Clip::Default
+    }
+}
+
 impl SpriteID {
     pub fn new(index:u16) -> SpriteID {
         Self {
@@ -31,7 +43,8 @@ pub struct Sprite<W:GameWorld> {
     pub frame:f32,
     pub animation_reverse:bool,
     pub ext:W::Sprite,
-    pub owner:u128
+    pub owner:u128,
+    pub clip:Clip
 }
 
 impl<W:GameWorld> Sprite<W> {
@@ -47,7 +60,8 @@ impl<W:GameWorld> Sprite<W> {
             frame:1.0,
             animation_reverse:false,
             ext:W::Sprite::default(),
-            owner:0
+            owner:0,
+            clip:Clip::default()
         }
     }
 }

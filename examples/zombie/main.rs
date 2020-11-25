@@ -14,9 +14,19 @@ impl GameWorld for ZombieWorld {
     type Texture = ZombieTexture;
 }
 
-#[derive(Debug, Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone)]
 struct ZombieSprite {
-    cooldown:f32
+    cooldown:f32,
+    health:f32
+}
+
+impl Default for ZombieSprite {
+    fn default() -> Self {
+        Self {
+            cooldown:0.0,
+            health: 2.0
+        }
+    }
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -96,6 +106,7 @@ fn draw(ctx:&mut Context<ZombieWorld>) {
                     let v = v.normalize();
 
                     player.ext.cooldown = 0.5;
+                    player.ext.health = 5.0;
                     
                     let ball = ctx.world.new_sprite(ZombieArt::Ball);
                     ball.pos = pos + v * 1.1;
@@ -115,7 +126,12 @@ fn on_collision(ctx:&mut Context<ZombieWorld>) {
             if sprite1.art == ZombieArt::Ball {
                 // TODO: spawn an effect to show splash
                 ctx.world.delete_sprite(id1);
-                ctx.world.delete_sprite(id2);
+                if let Some(sprite2) = ctx.world.get_sprite_mut(id2) {
+                    sprite2.ext.health -= 1.0;
+                    if sprite2.ext.health <= 0.0 {
+                        ctx.world.delete_sprite(id2);
+                    }
+                }
             }
         }
     }

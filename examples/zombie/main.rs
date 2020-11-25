@@ -37,7 +37,8 @@ enum ZombieEvent {
 enum ZombieArt {
     Player,
     Zombie,
-    Ball
+    Ball,
+    BloodSplatter
 }
 
 #[derive(Copy, Clone, Hash, Eq, PartialEq)]
@@ -159,6 +160,15 @@ fn main() {
         texture_id:ZombieTexture::Spritesheet,
         origin:Vec2::new(0.5, 0.5)
     });
+    engine.art.insert(ZombieArt::BloodSplatter,Art {
+        animation : blueprint::art::Animation::Loop,
+        frames:[Rect2::new(0.0, 32.0, 32.0, 32.0), Rect2::new(32.0, 32.0, 32.0, 32.0), Rect2::new(64.0, 32.0, 32.0, 32.0)].into(),
+        frames_per_second:10.0,
+        height:0.5,
+        width:0.5,
+        texture_id:ZombieTexture::Spritesheet,
+        origin:Vec2::new(0.5, 0.5)
+    });
     engine.art.insert(ZombieArt::Ball, Art::new_1x1(ZombieTexture::Spritesheet, Rect2::new(32.0, 0.0, 16.0, 16.0)));
   
     engine.config.window_title = "Zombie Example".into();
@@ -166,6 +176,8 @@ fn main() {
     let mut s = engine.world.new_sprite(ZombieArt::Player);
     s.pos.x = 0.0;
     s.pos.y = 0.0;
+
+    let mut test = engine.world.new_sprite(ZombieArt::BloodSplatter);
 
 
     engine.systems.push(update);

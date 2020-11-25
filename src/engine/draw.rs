@@ -72,7 +72,7 @@ impl<W:GameWorld> Engine<W> {
                     let mut scale:Vector2<f32> = Vec2::new(1.0 / img.width() as f32 * frame.w, 1.0 / img.height() as f32 * frame.h).into();
                     scale.x *= sprite_type.width * current_sprite.scale.y;
                     scale.y *= sprite_type.height * current_sprite.scale.x;
-                    let mut dest:Point2<f32> = Vec2::new(pos.x, pos.y).into();
+                    let dest:Point2<f32> = Vec2::new(pos.x, pos.y).into();
                     let _ = graphics::draw(ctx, img, DrawParam {
                         dest,
                         src,

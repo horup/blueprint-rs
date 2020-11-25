@@ -1,8 +1,4 @@
-use Default;
-
 use crate::{event::Event, input::Input, world::{GameWorld, World}};
-
-
 
 pub struct Context<'a, W:GameWorld> {
     pub world:&'a mut World<W>,

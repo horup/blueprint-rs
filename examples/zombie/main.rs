@@ -84,8 +84,8 @@ fn update(ctx:&mut Context<ZombieWorld>)
     }
 }
 
-// TODO: move movement code to engine, since this can be reused
-// TODO: 1) implement zombie touch
+// TODO: 1) move movement code to engine, since this can be reused
+// TODO: 2) implement zombie touch
 // TODO: implement AI
 // TODO: implement restart of game
 // TODO: implement score or similar

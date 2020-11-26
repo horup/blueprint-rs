@@ -19,9 +19,6 @@ pub struct Engine<W:GameWorld> {
     event_loop:EventsLoop
 }
 
-// TODO implement cursor support
-// TODO implement player controlling support
-
 impl<W:GameWorld> Engine<W> {
     pub fn new() -> Self {
         let (ctx, event_loop) = ContextBuilder::new("game_id", "author")

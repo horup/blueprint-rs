@@ -15,7 +15,6 @@ pub struct Mouse {
     pub primary:bool
 }
 
-// TODO: implement generics support
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Input {
     pub keyboard:Keyboard,

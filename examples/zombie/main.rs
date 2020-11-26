@@ -129,13 +129,19 @@ fn collision_update(ctx:&mut Context<ZombieWorld>) {
         let sprite2 = ctx.world.get_sprite(id2);
         if let (Some(sprite1), Some(sprite2)) = (sprite1, sprite2) {
             if sprite1.art == ZombieArt::Ball {
+                let pos1 = sprite1.pos;
                 // TODO: spawn an effect to show splash
                 ctx.world.delete_sprite(id1);
                 if let Some(sprite2) = ctx.world.get_sprite_mut(id2) {
                     sprite2.ext.health -= 1.0;
+
                     if sprite2.ext.health <= 0.0 {
                         ctx.world.delete_sprite(id2);
                     }
+
+                    let mut splatter = ctx.world.new_sprite(ZombieArt::BloodSplatter);
+                    splatter.clip = blueprint::sprite::Clip::None;
+                    splatter.pos = pos1;
                 }
             }
         }
@@ -147,7 +153,7 @@ fn main() {
     engine.camera.zoom = 32.0;
     engine.load_texture(include_bytes!("spritesheet.png"), ZombieTexture::Spritesheet);
     engine.art.insert(ZombieArt::Player, Art {
-        animation : blueprint::art::Animation::LoopBackForth,
+        default_animation : blueprint::art::Animation::LoopForwardBackward,
         frames:[Rect2::new(0.0, 0.0, 16.0, 16.0), Rect2::new(0.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
         height:1.0,
@@ -156,7 +162,7 @@ fn main() {
         origin:Vec2::new(0.5, 0.5)
     });
     engine.art.insert(ZombieArt::Zombie,Art {
-        animation : blueprint::art::Animation::LoopBackForth,
+        default_animation : blueprint::art::Animation::LoopForwardBackward,
         frames:[Rect2::new(16.0, 0.0, 16.0, 16.0), Rect2::new(16.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
         height:1.0,
@@ -167,7 +173,7 @@ fn main() {
 
     // TODO: refactor into a function similar to new_1x1
     engine.art.insert(ZombieArt::BloodSplatter,Art {
-        animation : blueprint::art::Animation::Loop,
+        default_animation : blueprint::art::Animation::ForwardStop,
         frames:[Rect2::new(0.0, 32.0, 32.0, 32.0), Rect2::new(32.0, 32.0, 32.0, 32.0), Rect2::new(64.0, 32.0, 32.0, 32.0)].into(),
         frames_per_second:10.0,
         height:0.5,
@@ -183,8 +189,7 @@ fn main() {
     s.pos.x = 0.0;
     s.pos.y = 0.0;
 
-    let mut test = engine.world.new_sprite(ZombieArt::BloodSplatter);
-    test.clip = blueprint::sprite::Clip::None;
+   
 
 
     engine.systems.push(timer_and_cooldown_update);

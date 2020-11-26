@@ -1,6 +1,6 @@
 use glam::*;
 
-use crate::{world::GameWorld};
+use crate::{art::Animation, world::GameWorld};
 
 #[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Eq)]
 pub struct SpriteID {
@@ -57,11 +57,11 @@ pub struct Sprite<W:GameWorld> {
     pub visible:bool,
     pub art:W::Art,
     pub frame:f32,
-    pub animation_reverse:bool,
     pub ext:W::Sprite,
     pub owner:u128,
     pub clip:Clip,
-    pub locomotion:Locomotion
+    pub locomotion:Locomotion,
+    pub animation:Animation
 }
 
 impl<W:GameWorld> Sprite<W> {
@@ -75,11 +75,11 @@ impl<W:GameWorld> Sprite<W> {
             art:art,
             scale:Vec2::new(1.0, 1.0),
             frame:1.0,
-            animation_reverse:false,
             ext:W::Sprite::default(),
             owner:0,
             clip:Clip::default(),
-            locomotion:Locomotion::default()
+            locomotion:Locomotion::default(),
+            animation:Animation::Default
         }
     }
 }

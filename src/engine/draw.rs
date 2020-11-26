@@ -21,25 +21,33 @@ impl<W:GameWorld> Engine<W> {
         if let Some(prev_snapshot) = self.prev_snapshots.front() {
             for current_sprite in self.world.sprites_iter_mut() {
                 if let Some(sprite_type) = self.art.get(&current_sprite.art) {
-                    match sprite_type.animation 
+                    match current_sprite.animation
                     {
-                        crate::art::Animation::None => {}
-                        crate::art::Animation::Loop => {
+                        crate::art::Animation::Default => {
+                            current_sprite.animation = sprite_type.default_animation;
+                        }
+                        crate::art::Animation::None => {
+                        }
+                        crate::art::Animation::LoopReset => {
                             current_sprite.frame += dt * sprite_type.frames_per_second;
                             if current_sprite.frame > sprite_type.frames.len() as f32 {
                                 current_sprite.frame = 0.0;
                             }
                         }
-                        crate::art::Animation::LoopBackForth => {
+                        crate::art::Animation::LoopForwardBackward => {
                             let dt = dt * sprite_type.frames_per_second;
-                            if current_sprite.animation_reverse { current_sprite.frame -= dt} else { current_sprite.frame += dt};
+                            current_sprite.frame += dt;
                             if current_sprite.frame > sprite_type.frames.len() as f32 {
                                 current_sprite.frame = sprite_type.frames.len() as f32 - 1.0;
-                                current_sprite.animation_reverse = true;
+                                current_sprite.animation = crate::art::Animation::LoopBackwardForward;
                             }
-                            else if current_sprite.frame <= 0.0 {
+                        }
+                        crate::art::Animation::LoopBackwardForward => {
+                            let dt = dt * sprite_type.frames_per_second;
+                            current_sprite.frame -= dt;
+                            if current_sprite.frame <= 0.0 {
                                 current_sprite.frame = 0.99;
-                                current_sprite.animation_reverse = false;
+                                current_sprite.animation = crate::art::Animation::LoopForwardBackward;
                             }
                         }
                         crate::art::Animation::ForwardStop => {

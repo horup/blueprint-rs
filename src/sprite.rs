@@ -29,8 +29,24 @@ impl SpriteID {
     }
 }
 
+#[derive(Debug, Copy, Clone, PartialOrd, PartialEq)]
+pub struct Locomotion {
+    pub target_vel:Vec3,
+    pub acceleration_max:Vec3
+}
+
+impl Default for Locomotion {
+    fn default() -> Self {
+        Self {
+            target_vel:Vec3::default(),
+            acceleration_max:Vec3::splat(10.0)
+        }
+    }
+}
+
 // TODO: Add rotation
 // TODO: added clipping type to control collision
+// BUG: fixed draw order, maybe using z 
 #[derive(Copy, Clone, PartialOrd, PartialEq)]
 pub struct Sprite<W:GameWorld> {
     id:SpriteID,
@@ -44,7 +60,8 @@ pub struct Sprite<W:GameWorld> {
     pub animation_reverse:bool,
     pub ext:W::Sprite,
     pub owner:u128,
-    pub clip:Clip
+    pub clip:Clip,
+    pub locomotion:Locomotion
 }
 
 impl<W:GameWorld> Sprite<W> {
@@ -61,7 +78,8 @@ impl<W:GameWorld> Sprite<W> {
             animation_reverse:false,
             ext:W::Sprite::default(),
             owner:0,
-            clip:Clip::default()
+            clip:Clip::default(),
+            locomotion:Locomotion::default()
         }
     }
 }

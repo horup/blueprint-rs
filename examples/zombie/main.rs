@@ -89,16 +89,42 @@ fn update(ctx:&mut Context<ZombieWorld>)
 // TODO: implement AI
 // TODO: implement restart of game
 // TODO: implement score or similar
-fn draw(ctx:&mut Context<ZombieWorld>) {
+fn player_input_locomotion_cooldown(ctx:&mut Context<ZombieWorld>) {
+    // TODO: make common in engine
+
     match  ctx.event {
-        Event::Draw(_delta) => {
+        Event::Update(delta) => {
             if let Some(player) = ctx.world.find_sprite_mut(|x| {x.art == ZombieArt::Player}) {
+                
                 let k = ctx.input.keyboard;
                 let x = if k.left { -1.0 } else if k.right { 1.0 } else { 0.0 };
                 let y = if k.up { -1.0 } else if k.down { 1.0 } else { 0.0 };
-                let speed = 2.0;
-                let v = Vec3::new(x, y, 0.0).normalize() * speed;
-                player.vel = v;
+                let max_speed = 5.0;
+                let target_vel:Vec3 = Vec3::new(x, y, 0.0) * max_speed;
+                let target_vel = if target_vel.length() > max_speed {target_vel.normalize() * max_speed} else {target_vel};
+
+                player.locomotion.target_vel = target_vel;
+                let target_vel = player.locomotion.target_vel;
+                let vel = player.vel;
+                let diff:Vec3 = target_vel - vel;
+                if diff.length() > 0.0 {
+                    let acceleration = 30.0 * *delta;
+                    let acceleration:Vec3 = diff.normalize() * acceleration;
+                    let acceleration = if acceleration.length() < diff.length() {acceleration} else {diff};
+                    player.vel += acceleration;
+                }
+                
+
+             /*   let loc = player.locomotion;
+                println!("{}", loc.target_vel);
+                let mut diff:Vec3 = (loc.target_vel - player.vel) * *delta;
+                let acceleration_max:Vec3 = player.locomotion.acceleration_max * *delta;*/
+            /*    diff.x = if diff.x.abs() > acceleration_max.x {acceleration_max.x * diff.x.signum()} else {diff.x};
+                diff.y = if diff.y.abs() > acceleration_max.y {acceleration_max.y * diff.y.signum()} else {diff.y};
+                diff.z = if diff.z.abs() > acceleration_max.x {acceleration_max.z * diff.z.signum()} else {diff.z};*/
+
+
+
                 if player.ext.cooldown <= 0.0 && ctx.input.mouse.primary {
                     let pos = player.pos;
                     let target = ctx.input.mouse.pos;
@@ -183,7 +209,7 @@ fn main() {
 
 
     engine.systems.push(update);
-    engine.systems.push(draw);
+    engine.systems.push(player_input_locomotion_cooldown);
     engine.systems.push(on_collision);
     Engine::run(engine);
 }

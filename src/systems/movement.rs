@@ -24,6 +24,7 @@ fn compute_movement<W:GameWorld>(world:&World<W>, sprite:&Sprite<W>, diff:&Vec3,
         return res;
     }
 
+    // BUG: while loop can take along time in case of an error in speed
     let mut remaining = distance;
     while remaining > 0.0 {
         let step = if distance < max { distance} else {max};

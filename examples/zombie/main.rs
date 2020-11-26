@@ -176,8 +176,8 @@ fn main() {
         default_animation : blueprint::art::Animation::ForwardStop,
         frames:[Rect2::new(0.0, 32.0, 32.0, 32.0), Rect2::new(32.0, 32.0, 32.0, 32.0), Rect2::new(64.0, 32.0, 32.0, 32.0)].into(),
         frames_per_second:10.0,
-        height:0.5,
-        width:0.5,
+        height:1.0,
+        width:1.0,
         texture_id:ZombieTexture::Spritesheet,
         origin:Vec2::new(0.5, 0.5)
     });

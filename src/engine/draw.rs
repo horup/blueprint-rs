@@ -1,4 +1,4 @@
-use ggez::{self, graphics::{self, Color, DrawParam, Rect}, mint::Point2, mint::Vector2, timer};
+use ggez::{self, graphics::{self, Color, DrawMode, DrawParam, Rect}, mint::Point2, mint::Vector2, timer};
 use glam::Vec2;
 use crate::world::GameWorld;
 use super::Engine;
@@ -6,6 +6,17 @@ use super::Engine;
 // TODO: add sprite rectangle when in debug mode
 impl<W:GameWorld> Engine<W> {
     fn draw_debug(&mut self, ctx:&mut ggez::Context) -> ggez::GameResult {
+       
+
+        for sprite in self.world.sprites_iter() {
+            let b = graphics::Mesh::new_rectangle(ctx, 
+                DrawMode::fill(), 
+                Rect::new(0.0, 0.0, 100.0, 100.0), 
+                graphics::WHITE)?;
+            
+                graphics::draw(ctx, &b, DrawParam::default())?;
+        }
+
         graphics::set_screen_coordinates(ctx, Rect::new(0.0, 0.0, self.config.width, self.config.height))?;
         let text = graphics::Text::new(format!("FPS: {}", timer::fps(ctx) as i32));
         graphics::draw(ctx, &text, DrawParam {

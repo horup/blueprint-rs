@@ -1,7 +1,7 @@
 use ggez::{event::KeyCode, input::{keyboard, mouse}, timer};
 use glam::{Vec3};
 
-use crate::{context::Context, event::Event, input::{Input, Keyboard, Mouse}, systems::movement, world::GameWorld};
+use crate::{context::Context, event::Event, input::{Input, Keyboard, Mouse}, systems::movement, world::GameWorld, systems::locomotion};
 use super::Engine;
 
 
@@ -30,7 +30,9 @@ impl<W:GameWorld> Engine<W>  {
 
     fn push_event(&mut self, event:Event<W::Event>, ctx:&mut ggez::Context) {
         let input = self.get_input(&ctx);
-        let engine_systems = [movement::movement];
+        let engine_systems = [
+            locomotion::locomotion, 
+            movement::movement];
         let mut new_events = Vec::new();
         let mut push_event = |e| {
             new_events.push(e);

@@ -1,4 +1,4 @@
-use ggez::{self, graphics::{self, Color, DrawMode, DrawParam, Rect}, mint::Point2, mint::Vector2, timer};
+use ggez::{self, graphics::{self, Color, DrawMode, DrawParam, Rect}, mint::Point2, graphics::StrokeOptions, mint::Vector2, timer};
 use glam::Vec2;
 use crate::world::GameWorld;
 use super::Engine;
@@ -6,28 +6,32 @@ use super::Engine;
 // TODO: add sprite rectangle when in debug mode
 impl<W:GameWorld> Engine<W> {
     fn draw_debug(&mut self, ctx:&mut ggez::Context) -> ggez::GameResult {
-       
-        let p:ggez::mint::Point2<f32> = Vec2::new(0.0, 0.0).into();
-        let b = graphics::Mesh::new_circle(ctx, 
-            DrawMode::fill(), 
-            p,
-            0.25,
-            0.5,
-            Color::from_rgb(255, 0, 0))?;
+        if self.config.debug.show_sprite_bounds {
+            let p:ggez::mint::Point2<f32> = [0.0,0.0].into();
+            let b = graphics::Mesh::new_circle(ctx, 
+                DrawMode::Stroke(StrokeOptions::default().with_line_width(0.1)), 
+                p,
+                0.5,
+                0.05,
+                Color::from_rgb(255, 0, 0))?;
 
-        for sprite in self.world.sprites_iter() {
-            let mut draw_param = DrawParam::default();
-            draw_param.dest.x = sprite.pos.x;
-            draw_param.dest.y = sprite.pos.y;
-            graphics::draw(ctx, &b, draw_param)?;
+            for sprite in self.world.sprites_iter() {
+                let mut draw_param = DrawParam::default();
+                draw_param.dest.x = sprite.pos.x;
+                draw_param.dest.y = sprite.pos.y;
+                graphics::draw(ctx, &b, draw_param)?;
+            }
         }
 
         graphics::set_screen_coordinates(ctx, Rect::new(0.0, 0.0, self.config.width, self.config.height))?;
-        let text = graphics::Text::new(format!("FPS: {}", timer::fps(ctx) as i32));
-        graphics::draw(ctx, &text, DrawParam {
-            dest:[0.0, 0.0].into(),
-            ..Default::default()
-        })?;
+
+        if self.config.debug.show_fps {
+            let text = graphics::Text::new(format!("FPS: {}", timer::fps(ctx) as i32));
+            graphics::draw(ctx, &text, DrawParam {
+                dest:[0.0, 0.0].into(),
+                ..Default::default()
+            })?;
+        }
 
         Result::Ok(())
     }

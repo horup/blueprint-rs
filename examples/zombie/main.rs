@@ -70,7 +70,7 @@ fn timer_and_cooldown_update(ctx:&mut Context<ZombieWorld>)
                 s.pos.x = random::<f32>() * dx - dx / 2.0;
                 s.frame = s.pos.x % 10.0;
                 s.pos.y = -dy;
-                s.vel.y = 1.0;
+                s.locomotion.target_vel = Vec3::new(0.0, 1.0, 0.0);
             }
 
             for s in ctx.world.sprites_iter_mut() {
@@ -111,11 +111,11 @@ fn player_input_update(ctx:&mut Context<ZombieWorld>) {
                     let v = v.normalize();
 
                     player.ext.cooldown = 0.5;
-                    player.ext.health = 5.0;
                     
                     let ball = ctx.world.new_sprite(ZombieArt::Ball);
                     ball.pos = pos + v * 1.1;
-                    ball.vel = v * 4.0;
+                    ball.vel = v * 8.0;
+                    ball.locomotion.target_vel = ball.vel;
                 }
             }
         },

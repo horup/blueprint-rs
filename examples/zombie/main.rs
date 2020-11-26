@@ -54,7 +54,7 @@ impl Default for ZombieWorld {
     }
 }
 
-fn update(ctx:&mut Context<ZombieWorld>) 
+fn timer_and_cooldown_update(ctx:&mut Context<ZombieWorld>) 
 {
     match ctx.event {
         blueprint::event::Event::Update(delta) => {
@@ -88,7 +88,7 @@ fn update(ctx:&mut Context<ZombieWorld>)
 // TODO: implement AI
 // TODO: implement restart of game
 // TODO: implement score or similar
-fn player_input_cooldown(ctx:&mut Context<ZombieWorld>) {
+fn player_input_update(ctx:&mut Context<ZombieWorld>) {
     // TODO: make common in engine
 
     match  ctx.event {
@@ -123,7 +123,7 @@ fn player_input_cooldown(ctx:&mut Context<ZombieWorld>) {
     }
 }
 
-fn on_collision(ctx:&mut Context<ZombieWorld>) {
+fn collision_update(ctx:&mut Context<ZombieWorld>) {
     if let Event::CollisionBetweenSprites(id1, id2) = ctx.event {
         let sprite1 = ctx.world.get_sprite(id1);
         let sprite2 = ctx.world.get_sprite(id2);
@@ -187,8 +187,8 @@ fn main() {
     test.clip = blueprint::sprite::Clip::None;
 
 
-    engine.systems.push(update);
-    engine.systems.push(player_input_cooldown);
-    engine.systems.push(on_collision);
+    engine.systems.push(timer_and_cooldown_update);
+    engine.systems.push(player_input_update);
+    engine.systems.push(collision_update);
     Engine::run(engine);
 }

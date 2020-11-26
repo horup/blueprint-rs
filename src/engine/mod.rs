@@ -19,6 +19,7 @@ pub struct Engine<W:GameWorld> {
     event_loop:EventsLoop
 }
 
+// TODO: improve system handling
 impl<W:GameWorld> Engine<W> {
     pub fn new() -> Self {
         let (ctx, event_loop) = ContextBuilder::new("game_id", "author")

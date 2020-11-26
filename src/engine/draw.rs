@@ -7,14 +7,19 @@ use super::Engine;
 impl<W:GameWorld> Engine<W> {
     fn draw_debug(&mut self, ctx:&mut ggez::Context) -> ggez::GameResult {
        
+        let p:ggez::mint::Point2<f32> = Vec2::new(0.0, 0.0).into();
+        let b = graphics::Mesh::new_circle(ctx, 
+            DrawMode::fill(), 
+            p,
+            0.25,
+            0.5,
+            Color::from_rgb(255, 0, 0))?;
 
         for sprite in self.world.sprites_iter() {
-            let b = graphics::Mesh::new_rectangle(ctx, 
-                DrawMode::fill(), 
-                Rect::new(0.0, 0.0, 100.0, 100.0), 
-                graphics::WHITE)?;
-            
-                graphics::draw(ctx, &b, DrawParam::default())?;
+            let mut draw_param = DrawParam::default();
+            draw_param.dest.x = sprite.pos.x;
+            draw_param.dest.y = sprite.pos.y;
+            graphics::draw(ctx, &b, draw_param)?;
         }
 
         graphics::set_screen_coordinates(ctx, Rect::new(0.0, 0.0, self.config.width, self.config.height))?;

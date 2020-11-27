@@ -25,12 +25,24 @@ impl<W:GameWorld> Engine<W> {
 
         graphics::set_screen_coordinates(ctx, Rect::new(0.0, 0.0, self.config.width, self.config.height))?;
 
+        let mut y = 0.0;
+        let spacing = 16.0;
         if self.config.debug.show_fps {
             let text = graphics::Text::new(format!("FPS: {}", timer::fps(ctx) as i32));
             graphics::draw(ctx, &text, DrawParam {
-                dest:[0.0, 0.0].into(),
+                dest:[0.0, y].into(),
                 ..Default::default()
             })?;
+            y += spacing;
+        }
+
+        if self.config.debug.show_mouse_state {
+            let text = graphics::Text::new(format!("Mouse: {}", self.input.mouse.pos));
+            graphics::draw(ctx, &text, DrawParam {
+                dest:[0.0, y].into(),
+                ..Default::default()
+            })?;
+            y += spacing;
         }
 
         Result::Ok(())
@@ -97,14 +109,16 @@ impl<W:GameWorld> Engine<W> {
                     src.w = frame.w as f32 / src.w;
                     src.h = frame.h as f32 / src.h;
                     
-                    let mut scale:Vector2<f32> = Vec2::new(1.0 / img.width() as f32 * frame.w, 1.0 / img.height() as f32 * frame.h).into();
-                    scale.x *= sprite_type.width * current_sprite.scale.y;
-                    scale.y *= sprite_type.height * current_sprite.scale.x;
+                    let mut size:Vector2<f32> = Vec2::new(1.0 / img.width() as f32, 1.0 / img.height() as f32).into();
+                    size.x *= self.camera.zoom;
+                    size.y *= self.camera.zoom;
+                   /* size.x *= current_sprite.size.y;
+                    size.y *= sprite_type.height * current_sprite.size.x;*/
                     let dest:Point2<f32> = Vec2::new(pos.x, pos.y).into();
                     let _ = graphics::draw(ctx, img, DrawParam {
                         dest,
                         src,
-                        scale,
+                        scale: size,
                         ..DrawParam::default()
                     });
 

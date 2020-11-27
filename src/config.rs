@@ -1,14 +1,16 @@
 #[derive(Debug, Copy, Clone, PartialOrd, PartialEq)]
 pub struct Debug {
     pub show_fps:bool,
-    pub show_sprite_bounds:bool
+    pub show_sprite_bounds:bool,
+    pub show_mouse_state:bool
 }
 
 impl Default for Debug {
     fn default() -> Self {
         Self {
             show_fps:true,
-            show_sprite_bounds:false
+            show_sprite_bounds:true,
+            show_mouse_state:true
         }
     }
 }

@@ -6,14 +6,17 @@ use super::Engine;
 
 
 impl<W:GameWorld> Engine<W>  {
-
-    
     fn get_input(&self, ctx:&ggez::Context) -> Input {
         let mouse_pos = mouse::position(ctx);
-        let mut mouse_pos = Vec3::new((mouse_pos.x - self.config.width/2.0) / self.camera.zoom, (mouse_pos.y  - self.config.height/2.0) / self.camera.zoom, 0.0);
+        /*let mut mouse_pos = Vec3::new((mouse_pos.x - self.config.width/2.0) / self.camera.zoom, (mouse_pos.y  - self.config.height/2.0) / self.camera.zoom, 0.0);
         mouse_pos.x -= self.camera.pos.x;
-        mouse_pos.y -= self.camera.pos.y;
-        
+        mouse_pos.y -= self.camera.pos.y;*/
+
+        let zoom_w = self.config.width / self.camera.zoom;
+        let zoom_h = self.config.height / self.camera.zoom;
+        let mut mouse_pos = Vec3::new(mouse_pos.x / self.config.width * zoom_w, mouse_pos.y / self.config.height * zoom_h, 0.0);
+        mouse_pos.x += -self.camera.pos.x - zoom_w/2.0;
+        mouse_pos.y += -self.camera.pos.y - zoom_h/2.0;
         Input {
             keyboard: Keyboard {
                 up:keyboard::is_key_pressed(ctx, KeyCode::W),
@@ -29,7 +32,6 @@ impl<W:GameWorld> Engine<W>  {
     }
 
     fn push_event(&mut self, event:Event<W::Event>, ctx:&mut ggez::Context) {
-        let input = self.get_input(&ctx);
         let engine_systems = [
             locomotion::locomotion, 
             movement::movement];
@@ -41,7 +43,7 @@ impl<W:GameWorld> Engine<W>  {
             let mut context = Context {
                 event:&event,
                 world:&mut self.world,
-                input,
+                input:self.input,
                 push_event:&mut push_event
             };
 
@@ -52,7 +54,7 @@ impl<W:GameWorld> Engine<W>  {
             let mut context = Context {
                 event:&event,
                 world:&mut self.world,
-                input,
+                input:self.input,
                 push_event:&mut push_event
             };
 
@@ -65,6 +67,7 @@ impl<W:GameWorld> Engine<W>  {
     }
 
     pub(super) fn ggez_update(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
+        self.input = self.get_input(&ctx);
         while timer::check_update_time(ctx, self.config.tick_rate_ps) {
             let prev_snapshot = self.world.clone();
             if self.prev_snapshots.len() > 20 {

@@ -5,7 +5,7 @@ use std::collections::VecDeque;
 use ggez::{Context, ContextBuilder, event::{self, EventHandler, EventsLoop}, graphics::{self}};
 use ggez::graphics::{GlBackendSpec, ImageGeneric};
 
-use crate::{camera::Camera, collection::Collection, config::Config, art::Art, system::System, world::GameWorld, world::World};
+use crate::{art::Art, camera::Camera, collection::Collection, config::Config, system::System, world::GameWorld, input::Input, world::World};
 
 pub struct Engine<W:GameWorld> {
     pub world:World<W>,
@@ -14,6 +14,7 @@ pub struct Engine<W:GameWorld> {
     pub art:Collection<W::Art, Art<W>>,
     pub config:Config,
     pub camera:Camera,
+    pub input:Input,
     textures:Collection<W::Texture, ImageGeneric<GlBackendSpec>>,
     ctx:ggez::Context,
     event_loop:EventsLoop
@@ -34,7 +35,8 @@ impl<W:GameWorld> Engine<W> {
             ctx:ctx,
             event_loop:event_loop,
             art:Collection::default(),
-            camera:Camera::default()
+            camera:Camera::default(),
+            input:Input::default()
         };
 
         graphics::set_default_filter(&mut engine.ctx, graphics::FilterMode::Nearest);
@@ -54,6 +56,7 @@ impl<W:GameWorld> Engine<W> {
     }
 
     pub fn run(mut engine:Self) {
+        // BUG: fix title showing ggez before title of game
         let ctx:*mut Context = &mut engine.ctx;
         let event_loop:*mut EventsLoop = &mut engine.event_loop;
 

@@ -27,8 +27,6 @@ pub struct Art<W:GameWorld> {
     pub frames:Vec<Rect2<f32>>,
     pub frames_per_second:f32,
     pub default_animation:Animation,
-    pub width:f32,
-    pub height:f32,
     pub origin:Vec2
 }
 
@@ -39,8 +37,6 @@ impl<W:GameWorld> Art<W> {
             frames:[frame].into(),
             default_animation:Animation::None,
             frames_per_second:0.0,
-            width:1.0,
-            height:1.0,
             origin:Vec2::new(0.5, 0.5)
         }
     }

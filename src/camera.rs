@@ -8,7 +8,7 @@ pub struct Camera {
 impl Default for Camera {
     fn default() -> Self {
         Self {
-            zoom:4.0,
+            zoom:16.0,
             pos:Vec3::new(0.0, 0.0, 0.0)
         }
     }

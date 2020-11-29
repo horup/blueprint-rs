@@ -14,7 +14,6 @@ fn aabb2(pos:&Vec3) -> Aabb2<f32> {
 }
 
 // TODO: refactor using interiour mutability 
-// BUG: fix issue with scaling and sprite_type width/height
 fn compute_movement<W:GameWorld>(world:&World<W>, sprite:&Sprite<W>, diff:&Vec3, push_event:&mut dyn FnMut(Event<W::Event>)) -> Vec3
 {
     let mut res = sprite.pos;

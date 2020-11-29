@@ -17,7 +17,6 @@ impl Default for Animation {
     }
 }
 
-// TODO: added origin
 // TODO: refactor texture_id, frame, etc.
 // TODO: refactor Rect2 into Frame type, since this will be extended in the future.
 // TODO: add new_xxx which can instantiate zombie game

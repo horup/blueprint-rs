@@ -1,7 +1,8 @@
 mod draw;
 mod update;
-use std::collections::VecDeque;
+use std::collections::{HashMap, VecDeque};
 
+use event::KeyCode;
 use ggez::{Context, ContextBuilder, event::{self, EventHandler, EventsLoop}, graphics::{self}};
 use ggez::graphics::{GlBackendSpec, ImageGeneric};
 
@@ -15,6 +16,7 @@ pub struct Engine<W:GameWorld> {
     pub config:Config,
     pub camera:Camera,
     pub input:Input,
+    pub keyboard_map:HashMap<KeyCode, bool>,
     textures:Collection<W::Texture, ImageGeneric<GlBackendSpec>>,
     ctx:ggez::Context,
     event_loop:EventsLoop
@@ -34,6 +36,7 @@ impl<W:GameWorld> Engine<W> {
             textures:Collection::default(),
             ctx:ctx,
             event_loop:event_loop,
+            keyboard_map:HashMap::new(),
             art:Collection::default(),
             camera:Camera::default(),
             input:Input::default()

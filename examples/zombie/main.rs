@@ -150,7 +150,7 @@ fn collision_update(ctx:&mut Context<ZombieWorld>) {
 }
 
 fn main() {
-    let mut engine:Engine<ZombieWorld> = Engine::new();
+    let mut engine:Engine<ZombieWorld> = Engine::new("Zombie Example".into());
     engine.camera.zoom = 32.0;
     engine.load_texture(include_bytes!("spritesheet.png"), ZombieTexture::Spritesheet);
     engine.art.insert(ZombieArt::Player, Art {
@@ -178,8 +178,6 @@ fn main() {
     });
     engine.art.insert(ZombieArt::Ball, Art::new_1x1(ZombieTexture::Spritesheet, Rect2::new(32.0, 0.0, 16.0, 16.0)));
   
-    engine.config.window_title = "Zombie Example".into();
-
     let mut s = engine.world.new_sprite(ZombieArt::Player);
     s.pos.x = 0.0;
     s.pos.y = 0.0;

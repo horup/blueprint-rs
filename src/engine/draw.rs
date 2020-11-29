@@ -109,9 +109,14 @@ impl<W:GameWorld> Engine<W> {
                     src.w = frame.w as f32 / src.w;
                     src.h = frame.h as f32 / src.h;
                     
-                    let mut size:Vector2<f32> = Vec2::new(1.0 / img.width() as f32, 1.0 / img.height() as f32).into();
-                    size.x *= self.camera.zoom;
-                    size.y *= self.camera.zoom;
+                    //let mut size:Vector2<f32> = Vec2::new(1.0 / img.width() as f32, 1.0 / img.height() as f32).into();
+                    let mut size:Vector2<f32> = Vec2::new(1.0 / frame.w,1.0 / frame.h).into();
+                    size.x *= current_sprite.size.x;
+                    size.y *= current_sprite.size.y;
+
+                    let mut offset:Point2<f32> = Vec2::new(0.5, 0.5).into();
+                   // size.x *= self.camera.zoom;
+                   // size.y *= self.camera.zoom;
                    /* size.x *= current_sprite.size.y;
                     size.y *= sprite_type.height * current_sprite.size.x;*/
                     let dest:Point2<f32> = Vec2::new(pos.x, pos.y).into();
@@ -119,6 +124,7 @@ impl<W:GameWorld> Engine<W> {
                         dest,
                         src,
                         scale: size,
+                        offset,
                         ..DrawParam::default()
                     });
 

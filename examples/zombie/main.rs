@@ -140,6 +140,7 @@ fn collision_update(ctx:&mut Context<ZombieWorld>) {
                     }
 
                     let mut splatter = ctx.world.new_sprite(ZombieArt::BloodSplatter);
+                    splatter.size = [2.0, 2.0].into();
                     splatter.clip = blueprint::sprite::Clip::None;
                     splatter.pos = pos1;
                 }

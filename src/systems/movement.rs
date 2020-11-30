@@ -23,9 +23,10 @@ fn compute_movement<W:GameWorld>(world:&World<W>, sprite:&Sprite<W>, diff:&Vec3,
         return res;
     }
 
-    // BUG: while loop can take along time in case of an error in speed
     let mut remaining = distance;
-    while remaining > 0.0 {
+    let mut iterations = 0;
+    let max_iterations = 10;
+    while remaining > 0.0 && iterations < max_iterations {
         let step = if distance < max { distance} else {max};
         let dir = diff.normalize();
         let vs = [Vec3::new(0.0, dir.y * step, 0.0), Vec3::new(dir.x * step, 0.0, 0.0)];
@@ -53,6 +54,7 @@ fn compute_movement<W:GameWorld>(world:&World<W>, sprite:&Sprite<W>, diff:&Vec3,
         }
 
         remaining -= step;
+        iterations += 1;
     }
 
     res

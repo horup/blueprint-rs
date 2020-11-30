@@ -15,7 +15,6 @@ impl Default for Debug {
     }
 }
 
-// TODO: 1) add debug mode and displaying of origin and bounds of sprite
 pub struct Config {
     pub tick_rate_ps:u32,
     pub window_title:String,

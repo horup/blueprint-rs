@@ -95,6 +95,7 @@ fn timer_and_cooldown_update(ctx:&mut Context<ZombieWorld>)
     }
 }
 
+// TODO: 1) implement zombie attack center
 // TODO: 2) implement zombie touch
 // TODO: implement AI
 // TODO: implement restart of game

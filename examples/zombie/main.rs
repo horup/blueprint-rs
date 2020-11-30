@@ -1,4 +1,4 @@
-use blueprint::{art::Art, context::Context, engine::Engine, event::Event, math::Rect2, world::GameWorld};
+use blueprint::{art::{Animation, Art}, context::Context, engine::Engine, event::Event, math::Rect2, world::GameWorld};
 use glam::{Vec2, Vec3};
 use rand::random;
 
@@ -78,6 +78,10 @@ fn timer_and_cooldown_update(ctx:&mut Context<ZombieWorld>)
                 if s.ext.cooldown < 0.0 {
                     s.ext.cooldown = 0.0;
                 }
+
+                if s.animation == Animation::Stopped {
+                    s.delete();
+                }
             }
         },
         _ => {}
@@ -85,7 +89,6 @@ fn timer_and_cooldown_update(ctx:&mut Context<ZombieWorld>)
 }
 
 // TODO: 2) implement zombie touch
-// TODO: 1) finish splash animation
 // TODO: implement AI
 // TODO: implement restart of game
 // TODO: implement score or similar
@@ -138,6 +141,10 @@ fn collision_update(ctx:&mut Context<ZombieWorld>) {
 
                     if sprite2.ext.health <= 0.0 {
                         ctx.world.delete_sprite(id2);
+                    } else {
+                        let v:Vec3 = sprite2.pos - pos1;
+                        let v = v.normalize();
+                        sprite2.vel += v * 10.0;
                     }
 
                     let mut splatter = ctx.world.new_sprite(ZombieArt::BloodSplatter);

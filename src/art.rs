@@ -9,7 +9,8 @@ pub enum Animation {
     LoopForwardBackward,
     LoopBackwardForward,
     LoopReset,
-    ForwardStop
+    ForwardStop,
+    Stopped
 }
 impl Default for Animation {
     fn default() -> Self {

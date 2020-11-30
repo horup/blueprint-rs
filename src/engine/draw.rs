@@ -1,6 +1,6 @@
 use ggez::{self, graphics::{self, Color, DrawMode, DrawParam, Rect}, mint::Point2, graphics::StrokeOptions, mint::Vector2, timer};
 use glam::Vec2;
-use crate::world::GameWorld;
+use crate::{art::Animation, world::GameWorld};
 use super::Engine;
 
 // TODO: add sprite rectangle when in debug mode
@@ -86,8 +86,10 @@ impl<W:GameWorld> Engine<W> {
                             current_sprite.frame += dt * sprite_type.frames_per_second;
                             if current_sprite.frame > sprite_type.frames.len() as f32 {
                                 current_sprite.frame = sprite_type.frames.len() as f32 - 1.0;
-                            }
+                                current_sprite.animation = Animation::Stopped;
+                            } 
                         }
+                        Animation::Stopped => {}
                     }
                 }
             }

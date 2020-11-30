@@ -38,6 +38,11 @@ enum ZombieArt {
     Player,
     Zombie,
     Ball,
+    E(Effect)
+}
+
+#[derive(Copy, Clone, Hash, Eq, PartialEq)]
+enum Effect {
     BloodSplatter
 }
 
@@ -79,8 +84,10 @@ fn timer_and_cooldown_update(ctx:&mut Context<ZombieWorld>)
                     s.ext.cooldown = 0.0;
                 }
 
-                if s.animation == Animation::Stopped {
-                    s.delete();
+                if let ZombieArt::E(effect) = s.art {
+                    if s.animation == Animation::Stopped {
+                        s.delete();
+                    }
                 }
             }
         },
@@ -93,8 +100,6 @@ fn timer_and_cooldown_update(ctx:&mut Context<ZombieWorld>)
 // TODO: implement restart of game
 // TODO: implement score or similar
 fn player_input_update(ctx:&mut Context<ZombieWorld>) {
-    // TODO: make common in engine
-
     match  ctx.event {
         Event::Update(_delta) => {
             if let Some(player) = ctx.world.find_sprite_mut(|x| {x.art == ZombieArt::Player}) {
@@ -114,7 +119,7 @@ fn player_input_update(ctx:&mut Context<ZombieWorld>) {
                     let v = target - pos;
                     let v = v.normalize();
 
-                    player.ext.cooldown = 0.5;
+                    player.ext.cooldown = 0.25;
                     
                     let ball = ctx.world.new_sprite(ZombieArt::Ball);
                     ball.pos = pos + v * 1.1;
@@ -134,7 +139,6 @@ fn collision_update(ctx:&mut Context<ZombieWorld>) {
         if let (Some(sprite1), Some(sprite2)) = (sprite1, sprite2) {
             if sprite1.art == ZombieArt::Ball {
                 let pos1 = sprite1.pos;
-                // TODO: spawn an effect to show splash
                 ctx.world.delete_sprite(id1);
                 if let Some(sprite2) = ctx.world.get_sprite_mut(id2) {
                     sprite2.ext.health -= 1.0;
@@ -147,7 +151,7 @@ fn collision_update(ctx:&mut Context<ZombieWorld>) {
                         sprite2.vel += v * 10.0;
                     }
 
-                    let mut splatter = ctx.world.new_sprite(ZombieArt::BloodSplatter);
+                    let mut splatter = ctx.world.new_sprite(ZombieArt::E(Effect::BloodSplatter));
                     splatter.size = [2.0, 2.0].into();
                     splatter.clip = blueprint::sprite::Clip::None;
                     splatter.pos = pos1;
@@ -165,23 +169,23 @@ fn main() {
         default_animation : blueprint::art::Animation::LoopForwardBackward,
         frames:[Rect2::new(0.0, 0.0, 16.0, 16.0), Rect2::new(0.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
-        texture_id:ZombieTexture::Spritesheet,
+        texture:ZombieTexture::Spritesheet,
         origin:Vec2::new(0.5, 0.5)
     });
     engine.art.insert(ZombieArt::Zombie,Art {
         default_animation : blueprint::art::Animation::LoopForwardBackward,
         frames:[Rect2::new(16.0, 0.0, 16.0, 16.0), Rect2::new(16.0, 16.0, 16.0, 16.0)].into(),
         frames_per_second:2.0,
-        texture_id:ZombieTexture::Spritesheet,
+        texture:ZombieTexture::Spritesheet,
         origin:Vec2::new(0.5, 0.5)
     });
 
     // TODO: refactor into a function similar to new_1x1
-    engine.art.insert(ZombieArt::BloodSplatter,Art {
+    engine.art.insert(ZombieArt::E(Effect::BloodSplatter),Art {
         default_animation : blueprint::art::Animation::ForwardStop,
         frames:[Rect2::new(0.0, 32.0, 32.0, 32.0), Rect2::new(32.0, 32.0, 32.0, 32.0), Rect2::new(64.0, 32.0, 32.0, 32.0)].into(),
         frames_per_second:10.0,
-        texture_id:ZombieTexture::Spritesheet,
+        texture:ZombieTexture::Spritesheet,
         origin:Vec2::new(0.5, 0.5)
     });
     engine.art.insert(ZombieArt::Ball, Art::new_1x1(ZombieTexture::Spritesheet, Rect2::new(32.0, 0.0, 16.0, 16.0)));

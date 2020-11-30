@@ -97,7 +97,7 @@ impl<W:GameWorld> Engine<W> {
             for current_sprite in self.world.sprites_iter() {
                 let mut f = || {
                     let sprite_type = self.art.get(&current_sprite.art)?;
-                    let img = self.textures.get(&sprite_type.texture_id)?;
+                    let img = self.textures.get(&sprite_type.texture)?;
                     let prev_sprite = prev_snapshot.get_sprite(current_sprite.id()).unwrap_or(current_sprite);
                     let frame = current_sprite.frame as usize % sprite_type.frames.len();
                     let frame = sprite_type.frames.get(frame)?;

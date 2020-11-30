@@ -23,7 +23,7 @@ impl Default for Animation {
 // TODO: add new_xxx which can instantiate zombie game
 #[derive(Clone, Default)]
 pub struct Art<W:GameWorld> {
-    pub texture_id:W::Texture,
+    pub texture:W::Texture,
     pub frames:Vec<Rect2<f32>>,
     pub frames_per_second:f32,
     pub default_animation:Animation,
@@ -33,7 +33,7 @@ pub struct Art<W:GameWorld> {
 impl<W:GameWorld> Art<W> {
     pub fn new_1x1(texture:W::Texture, frame:Rect2<f32>) -> Art<W> {
         Self {
-            texture_id:texture,
+            texture:texture,
             frames:[frame].into(),
             default_animation:Animation::None,
             frames_per_second:0.0,

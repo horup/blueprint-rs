@@ -1,17 +1,34 @@
-use blueprint::{art::{Animation, Art}, context::Context, engine::Engine, event::Event, math::Rect2, world::GameWorld};
+use blueprint::{art::{Animation, Art}, context::Context, engine::Engine, event::Event, math::Rect2, world::{GameWorld, World}};
 use glam::{Vec2, Vec3};
 use rand::random;
 
+
+#[derive(Clone)]
+enum ZombieWorldState {
+    Ready,
+    InProgress,
+    End
+}
+
 #[derive(Clone)]
 struct ZombieWorld {
-    pub timer:f32
+    pub timer:f32,
+    pub state:ZombieWorldState
 }
+
 
 impl GameWorld for ZombieWorld {
     type Sprite = ZombieSprite;
     type Event = ZombieEvent;
     type Art = ZombieArt;
     type Texture = ZombieTexture;
+}
+
+impl ZombieWorld {
+    pub fn new_game(world:&mut World<ZombieWorld>) {
+        world.ext.timer = 0.0;
+        world.new_sprite(ZombieArt::Ready).size.x = 4.0;
+    }
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -38,6 +55,7 @@ enum ZombieArt {
     Player,
     Zombie,
     Ball,
+    Ready,
     E(Effect)
 }
 
@@ -54,7 +72,8 @@ enum ZombieTexture {
 impl Default for ZombieWorld {
     fn default() -> Self {
         Self {
-            timer:0.0
+            timer:0.0,
+            state:ZombieWorldState::Ready
         }
     }
 }
@@ -64,31 +83,38 @@ fn timer_and_cooldown_update(ctx:&mut Context<ZombieWorld>)
     match ctx.event {
         blueprint::event::Event::Update(delta) => {
             let timer = &mut ctx.world.ext.timer;
-
             *timer += delta;
 
-            if *timer > 0.2 {
-                *timer = 0.0;
-                let mut s = ctx.world.new_sprite(ZombieArt::Zombie);
-                let dy = 8.0;
-                let dx = 16.0;
-                s.pos.x = random::<f32>() * dx - dx / 2.0;
-                s.frame = s.pos.x % 10.0;
-                s.pos.y = -dy;
-                s.locomotion.target_vel = Vec3::new(0.0, 1.0, 0.0);
-            }
-
-            for s in ctx.world.sprites_iter_mut() {
-                s.ext.cooldown -= delta;
-                if s.ext.cooldown < 0.0 {
-                    s.ext.cooldown = 0.0;
+            match ctx.world.ext.state {
+                ZombieWorldState::Ready => {
+                    
                 }
-
-                if let ZombieArt::E(effect) = s.art {
-                    if s.animation == Animation::Stopped {
-                        s.delete();
+                ZombieWorldState::InProgress => {
+                    if *timer > 0.2 {
+                        *timer = 0.0;
+                        let mut s = ctx.world.new_sprite(ZombieArt::Zombie);
+                        let dy = 8.0;
+                        let dx = 16.0;
+                        s.pos.x = random::<f32>() * dx - dx / 2.0;
+                        s.frame = s.pos.x % 10.0;
+                        s.pos.y = -dy;
+                        s.locomotion.target_vel = Vec3::new(0.0, 1.0, 0.0);
+                    }
+        
+                    for s in ctx.world.sprites_iter_mut() {
+                        s.ext.cooldown -= delta;
+                        if s.ext.cooldown < 0.0 {
+                            s.ext.cooldown = 0.0;
+                        }
+        
+                        if let ZombieArt::E(effect) = s.art {
+                            if s.animation == Animation::Stopped {
+                                s.delete();
+                            }
+                        }
                     }
                 }
+                ZombieWorldState::End => {}
             }
         },
         _ => {}
@@ -189,17 +215,14 @@ fn main() {
         texture:ZombieTexture::Spritesheet,
         origin:Vec2::new(0.5, 0.5)
     });
+
+    engine.art.insert(ZombieArt::Ready, Art::new_1x1(ZombieTexture::Spritesheet, Rect2::new(0.0, 64.0, 32.0, 8.0)));
     engine.art.insert(ZombieArt::Ball, Art::new_1x1(ZombieTexture::Spritesheet, Rect2::new(32.0, 0.0, 16.0, 16.0)));
-  
-    let mut s = engine.world.new_sprite(ZombieArt::Player);
-    s.pos.x = 0.0;
-    s.pos.y = 0.0;
-
-   
-
-
     engine.systems.push(timer_and_cooldown_update);
     engine.systems.push(player_input_update);
     engine.systems.push(collision_update);
+
+    ZombieWorld::new_game(&mut engine.world);
+
     Engine::run(engine);
 }

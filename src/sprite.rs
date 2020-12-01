@@ -44,6 +44,7 @@ impl Default for Locomotion {
     }
 }
 
+// TODO: find a good way to implement screen space sprites
 // TODO: Add rotation
 // TODO: added clipping type to control collision
 // BUG: fixed draw order, maybe using z 
